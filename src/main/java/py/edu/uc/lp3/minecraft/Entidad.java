@@ -73,6 +73,8 @@ public abstract class Entidad {
 
 	public abstract void tick();
 
+	public abstract String emitirSonido();
+
 	protected void cambiarSalud(double nuevaSalud) {
 		if (nuevaSalud < 0) {
 			throw new IllegalArgumentException("La salud no puede ser negativa");

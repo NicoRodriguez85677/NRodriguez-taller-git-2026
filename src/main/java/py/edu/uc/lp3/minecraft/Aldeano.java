@@ -42,6 +42,11 @@ public class Aldeano extends Residente {
 	}
 
 	@Override
+	public String emitirSonido() {
+		return "Hmm... ¿En qué puedo ayudarte?";
+	}
+
+	@Override
 	public void interactuar(Jugador jugador) {
 		Objects.requireNonNull(jugador, "El jugador no puede ser nulo");
 		if (puedeComerciar()) {

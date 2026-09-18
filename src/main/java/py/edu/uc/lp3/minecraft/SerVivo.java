@@ -59,4 +59,9 @@ public abstract class SerVivo extends Entidad {
 			curar(regeneracion);
 		}
 	}
+
+	@Override
+	public String emitirSonido() {
+		return "Sonido genérico de un ser vivo";
+	}
 }

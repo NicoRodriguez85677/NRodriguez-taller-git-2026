@@ -24,6 +24,14 @@ public class Zombie extends MobHostil {
 	}
 
 	@Override
+	public String emitirSonido() {
+		if (estaQuemandose()) {
+			return "¡Agh! Me estoy quemando";
+		}
+		return "Grrr...";
+	}
+
+	@Override
 	public void tick() {
 		if (quemandose && estaViva()) {
 			recibirDano(1);

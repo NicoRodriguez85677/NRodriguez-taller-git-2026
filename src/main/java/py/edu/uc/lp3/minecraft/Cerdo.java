@@ -16,6 +16,11 @@ public class Cerdo extends Animal {
 	}
 
 	@Override
+	public String emitirSonido() {
+		return "Oinc oinc";
+	}
+
+	@Override
 	public boolean alimentar(Item alimento) {
 		if (alimento == null) {
 			throw new IllegalArgumentException("El alimento no puede ser nulo");
