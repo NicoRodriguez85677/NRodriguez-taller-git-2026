@@ -3,7 +3,7 @@ Taller Git 2026 - Modelado POO Minecraft con Spring Boot
 
 ## Diagrama de clases del modelo Minecraft
 
-Diagrama generado a partir del código real ubicado en `src/main/java/py/edu/uc/lp3/minecraft/`.
+Diagrama generado a partir del código real ubicado en `src/main/java/py/edu/uc/lp3/`, con las clases del dominio en `minecraft/` y los controladores REST en `rest/controller/`.
 
 ### Herencia
 
@@ -24,7 +24,17 @@ De `Animal` deriva `Cerdo`, y de `Residente` deriva `Aldeano`.
 ### Comportamiento polimórfico `emitirSonido()`
 
 `emitirSonido()` se declara abstracta en `Entidad`, se implementa genéricamente en `SerVivo` y se **sobrescribe** de forma polimórfica en `Zombie` (ej. "Grrr..."), `Cerdo` ("Oinc oinc") y `Aldeano` ("Hmm... ¿En qué puedo ayudarte?").
+### Sobrecarga y sobreescritura
 
+En esta revisión se agregó sobrecarga en la clase `Creeper`.
+
+- Se agregó un constructor simple `Creeper(Vector3D posicion)`.
+- Se agregó un constructor sobrecargado `Creeper(Vector3D posicion, double tiempoDetonacion)`.
+- También se sobrecargó el método `acercarse`, permitiendo usarlo con solo el objetivo o con un objetivo y una distancia máxima.
+
+La sobreescritura ya estaba presente mediante métodos con `@Override`. Por ejemplo, `Creeper` y `Zombie` redefinen `tick()`, y `Zombie` redefine `emitirSonido()`.
+
+La diferencia es que la sobrecarga mantiene el mismo nombre pero cambia los parámetros, mientras que la sobreescritura redefine en una clase hija un método heredado de una clase padre.
 ### Diagrama Mermaid
 
 ```mermaid
@@ -134,7 +144,10 @@ classDiagram
         +getTiempoDetonacion() double
         +estaDetonando() boolean
         +comenzarDetonacion() void
+        +Creeper(posicion Vector3D)
+        +Creeper(posicion Vector3D, tiempoDetonacion double)
         +acercarse(objetivo Entidad) void
+        +acercarse(objetivo Entidad, distanciaMaxima double) void
         +explotar() boolean
         +tick() void
     }

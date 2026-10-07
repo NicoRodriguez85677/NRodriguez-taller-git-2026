@@ -10,8 +10,17 @@ public class Creeper extends MobHostil {
 	private boolean explotado;
 
 	public Creeper(Vector3D posicion) {
+		this(posicion, TIEMPO_DETONACION_INICIAL);
+	}
+
+	public Creeper(Vector3D posicion, double tiempoDetonacion) {
 		super(TipoEntidad.CREEPER, "Creeper", 20, DANO_EXPLOSION, 4, posicion);
-		this.tiempoDetonacion = TIEMPO_DETONACION_INICIAL;
+
+		if (tiempoDetonacion <= 0) {
+			throw new IllegalArgumentException("El tiempo de detonación debe ser mayor que cero");
+		}
+
+		this.tiempoDetonacion = tiempoDetonacion;
 		this.detonando = false;
 		this.explotado = false;
 	}
@@ -31,6 +40,15 @@ public class Creeper extends MobHostil {
 	public void acercarse(Entidad objetivo) {
 		if (objetivo != null) {
 			moverse(objetivo.getPosicion());
+		}
+	}
+	public void acercarse(Entidad objetivo, double distanciaMaxima) {
+		if (objetivo != null) {
+			double distancia = getPosicion().distanciaA(objetivo.getPosicion());
+
+			if (distancia <= distanciaMaxima) {
+				moverse(objetivo.getPosicion());
+			}
 		}
 	}
 
