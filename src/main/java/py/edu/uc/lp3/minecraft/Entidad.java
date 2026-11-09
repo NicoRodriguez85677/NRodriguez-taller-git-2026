@@ -1,84 +1,114 @@
+
 package py.edu.uc.lp3.minecraft;
 
 import java.util.Objects;
 import java.util.UUID;
 
+import jakarta.persistence.Embedded;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public abstract class Entidad {
 
-	private final UUID id;
-	private final TipoEntidad tipo;
-	private final String nombre;
-	private double salud;
-	private Vector3D posicion;
+    @Id
+    private UUID id;
 
-	protected Entidad(TipoEntidad tipo, String nombre, double salud, Vector3D posicion) {
-		this.id = UUID.randomUUID();
-		this.tipo = Objects.requireNonNull(tipo, "El tipo de entidad no puede ser nulo");
-		if (nombre == null || nombre.isBlank()) {
-			throw new IllegalArgumentException("El nombre de la entidad no puede ser nulo ni vacío");
-		}
-		if (salud < 0) {
-			throw new IllegalArgumentException("La salud no puede ser negativa");
-		}
-		this.nombre = nombre;
-		this.salud = salud;
-		this.posicion = Objects.requireNonNull(posicion, "La posición no puede ser nula");
-	}
+    @Enumerated(EnumType.STRING)
+    private TipoEntidad tipo;
 
-	public UUID getId() {
-		return id;
-	}
+    private String nombre;
+    private double salud;
 
-	public TipoEntidad getTipo() {
-		return tipo;
-	}
+    @Embedded
+    private Vector3D posicion;
 
-	public String getNombre() {
-		return nombre;
-	}
+    // Constructor requerido por JPA
+    protected Entidad() {
+    }
 
-	public double getSalud() {
-		return salud;
-	}
+    protected Entidad(TipoEntidad tipo, String nombre,
+                      double salud, Vector3D posicion) {
+        this.id = UUID.randomUUID();
+        this.tipo = Objects.requireNonNull(tipo,
+                "El tipo de entidad no puede ser nulo");
 
-	public Vector3D getPosicion() {
-		return posicion;
-	}
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException(
+                    "El nombre no puede estar vacio");
+        }
 
-	public void recibirDano(double cantidad) {
-		if (cantidad <= 0) {
-			throw new IllegalArgumentException("La cantidad de daño debe ser mayor que cero");
-		}
-		if (estaViva()) {
-			salud = Math.max(0, salud - cantidad);
-		}
-	}
+        if (!Double.isFinite(salud) || salud < 0) {
+            throw new IllegalArgumentException(
+                    "La salud debe ser finita y no negativa");
+        }
 
-	public void curar(double cantidad) {
-		if (cantidad <= 0) {
-			throw new IllegalArgumentException("La cantidad de curación debe ser mayor que cero");
-		}
-		if (estaViva()) {
-			salud += cantidad;
-		}
-	}
+        this.nombre = nombre;
+        this.salud = salud;
+        this.posicion = Objects.requireNonNull(posicion,
+                "La posicion no puede ser nula");
+    }
 
-	public boolean estaViva() {
-		return salud > 0;
-	}
+    public UUID getId() {
+        return id;
+    }
 
-	public void moverse(Vector3D destino) {
-		this.posicion = Objects.requireNonNull(destino, "El destino no puede ser nulo");
-	}
+    public TipoEntidad getTipo() {
+        return tipo;
+    }
 
-	public abstract void tick();
+    public String getNombre() {
+        return nombre;
+    }
 
-	public abstract String emitirSonido();
+    public double getSalud() {
+        return salud;
+    }
 
-	protected void cambiarSalud(double nuevaSalud) {
-		if (nuevaSalud < 0) {
-			throw new IllegalArgumentException("La salud no puede ser negativa");
-		}
-		this.salud = nuevaSalud;
-	}
+    public Vector3D getPosicion() {
+        return posicion;
+    }
+
+    public void recibirDano(double cantidad) {
+        if (!Double.isFinite(cantidad) || cantidad <= 0) {
+            throw new IllegalArgumentException(
+                    "El dano debe ser positivo y finito");
+        }
+        if (estaViva()) {
+            salud = Math.max(0, salud - cantidad);
+        }
+    }
+
+    public void curar(double cantidad) {
+        if (!Double.isFinite(cantidad) || cantidad <= 0) {
+            throw new IllegalArgumentException(
+                    "La curacion debe ser positiva y finita");
+        }
+        if (estaViva()) {
+            salud += cantidad;
+        }
+    }
+
+    public boolean estaViva() {
+        return salud > 0;
+    }
+
+    public void moverse(Vector3D destino) {
+        this.posicion = Objects.requireNonNull(
+                destino, "El destino no puede ser nulo");
+    }
+
+    public abstract void tick();
+
+    public abstract String emitirSonido();
+
+    protected void cambiarSalud(double nuevaSalud) {
+        if (!Double.isFinite(nuevaSalud) || nuevaSalud < 0) {
+            throw new IllegalArgumentException(
+                    "La salud debe ser finita y no negativa");
+        }
+        this.salud = nuevaSalud;
+    }
 }

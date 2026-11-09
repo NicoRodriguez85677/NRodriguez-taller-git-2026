@@ -1,6 +1,9 @@
 package py.edu.uc.lp3.minecraft;
-
-public class Creeper extends MobHostil {
+import jakarta.persistence.Entity;
+import jakarta.persistence.DiscriminatorValue;
+@Entity
+@DiscriminatorValue("CREEPER")
+public class Creeper extends MobHostil implements Explosivo{
 
 	private static final double TIEMPO_DETONACION_INICIAL = 3.0;
 	private static final double DANO_EXPLOSION = 17;
@@ -8,7 +11,9 @@ public class Creeper extends MobHostil {
 	private double tiempoDetonacion;
 	private boolean detonando;
 	private boolean explotado;
-
+	protected Creeper() {
+    super();
+}
 	public Creeper(Vector3D posicion) {
 		this(posicion, TIEMPO_DETONACION_INICIAL);
 	}
@@ -51,7 +56,7 @@ public class Creeper extends MobHostil {
 			}
 		}
 	}
-
+	@Override
 	public boolean explotar() {
 		if (!detonando || explotado || !estaViva()) {
 			return false;
@@ -71,4 +76,23 @@ public class Creeper extends MobHostil {
 		}
 		super.tick();
 	}
+public double calcularDanoExplosion(Entidad objetivo) {
+    if (objetivo == null) {
+        throw new IllegalArgumentException(
+                "El objetivo no puede ser nulo");
+    }
+
+    double distancia = getPosicion()
+            .distanciaA(objetivo.getPosicion());
+
+    double radio = 4.0;
+
+    if (distancia > radio) {
+        return 0;
+    }
+
+    return Math.max(0,
+            getFuerzaAtaque() * (1 - distancia / radio));
+}
+
 }

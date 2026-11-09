@@ -1,0 +1,233 @@
+{
+  "info": {
+    "name": "POO-08 Minecraft CRUD H2 - Nicolas Rodriguez",
+    "description": "Colección para POO-08. Ejecutar 01 y 02; copiar UUID a variables creeperId y zombieId en Insomnia antes de continuar. No eliminar hasta terminar simulación. La base de datos es persistente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Crear Creeper",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mobs/creepers",
+        "description": "Copiar id resultante a la variable creeperId de la colección.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"x\": 0,\n  \"y\": 64,\n  \"z\": 0,\n  \"tiempoDetonacion\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "02 Crear Zombie",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mobs/zombies",
+        "description": "Copiar id resultante a la variable zombieId.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"x\": 2,\n  \"y\": 64,\n  \"z\": 0\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "03 Listar mobs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/mobs",
+        "description": ""
+      }
+    },
+    {
+      "name": "04 Obtener mob por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/mobs/{{zombieId}}",
+        "description": ""
+      }
+    },
+    {
+      "name": "05 Actualizar Zombie",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mobs/{{zombieId}}",
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"x\": 2,\n  \"y\": 64,\n  \"z\": 0,\n  \"salud\": 18\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "06 Interface Explosivo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/explosivos/{{creeperId}}",
+        "description": ""
+      }
+    },
+    {
+      "name": "07 Simular explosión",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/simulaciones/explosiones",
+        "description": "Usar un Creeper vivo. Ejecutar después de crear ambos mobs; si actualizaste la salud a 18, el resultado final será 9.5.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"creeperId\": \"{{creeperId}}\",\n  \"objetivoId\": \"{{zombieId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "08 Historial de explosiones",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/simulaciones/explosiones",
+        "description": ""
+      }
+    },
+    {
+      "name": "09 Historial por Creeper",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/simulaciones/explosiones/creeper/{{creeperId}}",
+        "description": ""
+      }
+    },
+    {
+      "name": "10 Excepción hija: mob inexistente (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/mobs/00000000-0000-0000-0000-000000000999",
+        "description": ""
+      }
+    },
+    {
+      "name": "11 Excepción hija: acción ilegal (409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/simulaciones/explosiones",
+        "description": "El origen es un Zombie, no un Creeper; devuelve 409.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"creeperId\": \"{{zombieId}}\",\n  \"objetivoId\": \"{{creeperId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "12 POST ilegal: tiempo de detonación negativo (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mobs/creepers",
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"x\": 0,\n  \"y\": 64,\n  \"z\": 0,\n  \"tiempoDetonacion\": -2\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "13 Eliminar Zombie (204)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/mobs/{{zombieId}}",
+        "description": "Ejecutar al final porque elimina el objetivo."
+      }
+    },
+    {
+      "name": "14 Eliminar Creeper (204)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/mobs/{{creeperId}}",
+        "description": "Ejecutar al final."
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/minecraft"
+    },
+    {
+      "key": "creeperId",
+      "value": "PEGAR_UUID_CREEPER"
+    },
+    {
+      "key": "zombieId",
+      "value": "PEGAR_UUID_ZOMBIE"
+    }
+  ]
+}

@@ -1,10 +1,15 @@
 package py.edu.uc.lp3.minecraft;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.DiscriminatorValue;
+@Entity
+@DiscriminatorValue("ZOMBIE")
 public class Zombie extends MobHostil {
 
-	private final double velocidad;
+	private double velocidad;
 	private boolean quemandose;
-
+	protected Zombie() {
+    super();
+}
 	public Zombie(Vector3D posicion) {
 		super(TipoEntidad.ZOMBIE, "Zombie", 20, 3, 16, posicion);
 		this.velocidad = 1.0;
