@@ -129,5 +129,4 @@ También se comprobó el endpoint de la interface `Explosivo`, las respuestas HT
 El comando Maven `clean test` terminó con cinco pruebas ejecutadas, cero fallas y cero errores.
 
 ## 10. Enlace al commit
-
-**Pendiente:** agregar aquí la URL exacta del commit definitivo una vez publicado en GitHub.
+https://github.com/NicoRodriguez85677/NRodriguez-taller-git-2026/commit/80e4af362d5e564478206097cad6d16d6e7e00e1

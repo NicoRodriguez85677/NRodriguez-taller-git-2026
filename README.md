@@ -619,4 +619,4 @@ La simulación se guardó en H2 y posteriormente se recuperó mediante GET. Un s
 
 ## Enlace al commit de POO-08
 
-El enlace exacto al commit definitivo se agregará después de completar las pruebas y registrar la solución en GitHub.
+(https://github.com/NicoRodriguez85677/NRodriguez-taller-git-2026/commit/80e4af362d5e564478206097cad6d16d6e7e00e1)
