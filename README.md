@@ -3,7 +3,7 @@ Taller Git 2026 - Modelado POO Minecraft con Spring Boot
 
 ## Diagrama de clases del modelo Minecraft
 
-Diagrama generado a partir del código real ubicado en `src/main/java/py/edu/uc/lp3/`, con las clases del dominio en `minecraft/` y los controladores REST en `rest/controller/`.
+Diagrama generado a partir del código real ubicado en `src/main/java/py/edu/uc/lp3/`, con las clases del dominio en `domain/` y los controladores REST en `rest/controller/`.
 
 ### Herencia
 
@@ -11,7 +11,7 @@ Diagrama generado a partir del código real ubicado en `src/main/java/py/edu/uc/
 
 De `SerVivo` derivan `Jugador` y la clase abstracta `MobHostil`. Los mobs hostiles concretos son `Zombie`, `Esqueleto`, `Creeper`, `Enderman` y `Ghast` (contribución fusionada).
 
-De `Animal` deriva `Cerdo`, y de `Residente` deriva `Aldeano`.
+De `Animal` derivan `Cerdo` y `Vaca`; de `Residente` deriva `Aldeano`, y de `Aldeano` deriva `AldeanoArmero`. Estas relaciones fueron comprobadas en sus archivos Java.
 
 ### Composición y asociaciones
 
@@ -23,7 +23,7 @@ De `Animal` deriva `Cerdo`, y de `Residente` deriva `Aldeano`.
 
 ### Comportamiento polimórfico `emitirSonido()`
 
-`emitirSonido()` se declara abstracta en `Entidad`, se implementa genéricamente en `SerVivo` y se **sobrescribe** de forma polimórfica en `Zombie` (ej. "Grrr..."), `Cerdo` ("Oinc oinc") y `Aldeano` ("Hmm... ¿En qué puedo ayudarte?").
+`emitirSonido()` se declara abstracta en `Entidad`, se implementa genéricamente en `SerVivo` y se sobrescribe en `Zombie`, `Cerdo`, `Aldeano`, `Vaca` y `AldeanoArmero`. La clase `Vaca` devuelve `"Muuu"`; `AldeanoArmero` personaliza el sonido del aldeano con un mensaje sobre armaduras. Ambos comportamientos fueron comprobados en el código.
 ### Sobrecarga y sobreescritura
 
 En esta revisión se agregó sobrecarga en la clase `Creeper`.
@@ -137,6 +137,25 @@ classDiagram
         +dispararFlecha(objetivo Entidad) boolean
     }
 
+    class TNT {
+        +encender() void
+        +puedeExplotar() boolean
+        +explotar() boolean
+    }
+
+    class Explosivo {
+        <<interface>>
+        +puedeExplotar() boolean
+        +explotar() boolean
+    }
+
+    class Atacante {
+        <<interface>>
+        +getFuerzaAtaque() double
+        +atacar(objetivo Entidad) void
+        +tipoAtaque() String
+    }
+
     class Creeper {
         -double tiempoDetonacion
         -boolean detonando
@@ -174,6 +193,21 @@ classDiagram
         +esDomesticable() boolean
         +alimentar(alimento Item)*
         +tick() void
+    }
+
+    class Vaca {
+        +Vaca(posicion Vector3D)
+        +emitirSonido() String
+        +alimentar(alimento Item) boolean
+    }
+
+    class AldeanoArmero {
+        -int nivelHerreria
+        +AldeanoArmero(posicion Vector3D)
+        +getNivelHerreria() int
+        +setNivelHerreria(nivelHerreria int) void
+        +forjarArmadura() void
+        +emitirSonido() String
     }
 
     class Cerdo {
@@ -234,10 +268,15 @@ classDiagram
     MobHostil <|-- Creeper : extends
     MobHostil <|-- Enderman : extends
     MobHostil <|-- Ghast : extends
+    Atacante <|.. MobHostil : implements
+    Explosivo <|.. Creeper : implements
+    Explosivo <|.. TNT : implements
     Entidad <|-- Animal : extends
     Animal <|-- Cerdo : extends
+    Animal <|-- Vaca : extends
     Entidad <|-- Residente : extends
     Residente <|-- Aldeano : extends
+    Aldeano <|-- AldeanoArmero : extends
 
     Jugador *-- Inventario : composicion
     Inventario o-- Item : 0..*
@@ -257,7 +296,9 @@ classDiagram
     Residente --> Jugador : interactuar
     Aldeano --> Jugador : comerciar
     Aldeano --> Item : comerciar
-```---
+```
+
+---
 
 # POO-08 — CRUD REST, H2 y simulación de explosiones
 
@@ -338,133 +379,69 @@ Las clases `Entidad` y `SerVivo` están marcadas como `@MappedSuperclass`, permi
 
 También se guarda `SimulacionExplosion`, que registra el historial de explosiones.
 
-## Diagrama Mermaid de POO-08
+## Diagrama Mermaid de POO-08 (actualizado)
+
+El cálculo de daño de la explosión reside en `ExplosionService`. Los controladores REST delegan las operaciones de negocio a servicios; `TNT` no es una entidad JPA.
 
 ```mermaid
 classDiagram
     class Entidad {
         <<abstract>>
-        -UUID id
-        -double salud
-        -Vector3D posicion
-        +recibirDano(double) void
     }
-
     class SerVivo {
         <<abstract>>
-        -double saludMaxima
-        +curar(double) void
     }
-
     class MobHostil {
         <<abstract>>
-        -double fuerzaAtaque
-        -double alcanceVision
-        +atacar(Entidad) void
     }
-
     class Creeper {
-        -double tiempoDetonacion
-        -boolean detonando
-        -boolean explotado
+        +puedeExplotar() boolean
         +explotar() boolean
-        +calcularDanoExplosion(Entidad) double
     }
-
-    class Zombie {
-        -double velocidad
-        -boolean quemandose
-        +tick() void
+    class Zombie
+    class TNT {
+        +encender() void
+        +puedeExplotar() boolean
+        +explotar() boolean
     }
-
     class Explosivo {
         <<interface>>
+        +puedeExplotar() boolean
         +explotar() boolean
     }
-
-    class MobHostilRepository {
+    class Atacante {
         <<interface>>
-        +save()
-        +findAll()
-        +findById()
-        +delete()
+        +getFuerzaAtaque() double
+        +atacar(objetivo Entidad) void
+        +tipoAtaque() String
     }
-
-    class SimulacionExplosion {
-        -UUID id
-        -UUID creeperId
-        -UUID objetivoId
-        -double distancia
-        -double danoAplicado
-        -double saludAntes
-        -double saludDespues
-    }
-
-    class SimulacionExplosionRepository {
-        <<interface>>
-        +save()
-        +findAll()
-        +findByCreeperId()
-    }
-
-    class MobHostilController {
-        +crearCreeper()
-        +crearZombie()
-        +listar()
-        +obtener()
-        +actualizar()
-        +eliminar()
-    }
-
-    class ExplosionService {
-        +simular()
-        +listar()
-        +porCreeper()
-    }
-
-    class SimulacionExplosionController {
-        +simular()
-        +listar()
-        +porCreeper()
-    }
-
-    class ExplosivoController {
-        +consultar()
-    }
-
-    class MinecraftException {
-        <<abstract>>
-    }
-
-    class MobNoEncontradoException
-    class AccionIlegalException
-
-    class MinecraftExceptionHandler {
-        +manejarNoEncontrado()
-        +manejarAccionIlegal()
-        +manejarArgumentoInvalido()
-    }
-
+    class MobHostilService
+    class ExplosionService
+    class MobHostilRepository
+    class SimulacionExplosionRepository
+    class SimulacionExplosion
+    class MobHostilController
+    class ExplosivoController
+    class PolimorfismoController
+    class RomeroMarceloController
+    class SimulacionExplosionController
     Entidad <|-- SerVivo
     SerVivo <|-- MobHostil
     MobHostil <|-- Creeper
     MobHostil <|-- Zombie
-
+    Atacante <|.. MobHostil
     Explosivo <|.. Creeper
-
-    MobHostilRepository ..> MobHostil
-    MobHostilController --> MobHostilRepository
-    ExplosivoController --> Explosivo
-
-    SimulacionExplosionRepository ..> SimulacionExplosion
+    Explosivo <|.. TNT
+    MobHostilService --> MobHostilRepository
     ExplosionService --> MobHostilRepository
     ExplosionService --> SimulacionExplosionRepository
+    MobHostilRepository ..> MobHostil
+    SimulacionExplosionRepository ..> SimulacionExplosion
+    MobHostilController --> MobHostilService
+    ExplosivoController --> MobHostilService
+    RomeroMarceloController --> MobHostilService
+    PolimorfismoController ..> Explosivo
     SimulacionExplosionController --> ExplosionService
-
-    MinecraftException <|-- MobNoEncontradoException
-    MinecraftException <|-- AccionIlegalException
-    MinecraftExceptionHandler ..> MobNoEncontradoException
-    MinecraftExceptionHandler ..> AccionIlegalException
 ```
 
 ## Endpoints REST
@@ -480,11 +457,14 @@ classDiagram
 | PUT | `/api/minecraft/mobs/{id}` | Actualizar posición y salud |
 | DELETE | `/api/minecraft/mobs/{id}` | Eliminar mob |
 
-### Interface y simulaciones
+### Interfaces y simulaciones
 
 | Método | URL | Descripción |
 |---|---|---|
 | GET | `/api/minecraft/explosivos/{id}` | Consultar capacidad Explosivo |
+| GET | `/api/minecraft/polimorfismo/tipos-ataque` | Demostrar polimorfismo con Atacante |
+| GET | `/api/minecraft/polimorfismo/explosivos` | Demostrar polimorfismo con Creeper y TNT |
+| GET | `/api/minecraft/ghast/simular-ataque` | Simular ataque y enfriamiento de Ghast |
 | POST | `/api/minecraft/simulaciones/explosiones` | Ejecutar y guardar explosión |
 | GET | `/api/minecraft/simulaciones/explosiones` | Consultar historial |
 | GET | `/api/minecraft/simulaciones/explosiones/creeper/{id}` | Consultar explosiones de un Creeper |
@@ -547,19 +527,17 @@ Se eligió `SINGLE_TABLE` porque Creeper y Zombie comparten los atributos de Mob
 
 ### 4. Interfaz y repositorio
 
-`MobHostilRepository` extiende `JpaRepository`, de modo que el controlador depende de una abstracción y Spring Data genera las operaciones de persistencia.
+`MobHostilRepository` extiende `JpaRepository`, y Spring Data genera las operaciones de persistencia. `MobHostilController` delega las operaciones a `MobHostilService`, no accede directamente al repositorio.
 
 Esto se relaciona con POO-07 porque una interfaz define un contrato sin obligar al consumidor a conocer su implementación.
 
 ### 5. Protocolo del dominio
 
-La interfaz `Explosivo` declara `explotar()` y está implementada por Creeper. El endpoint `GET /api/minecraft/explosivos/{id}` comprueba si el mob implementa ese contrato y devuelve su capacidad actual de explotar.
-
-Actualmente se aplica a Creeper, no a otras familias del modelo.
+La interfaz `Explosivo` declara `puedeExplotar()` y `explotar()`. La implementan `Creeper` y `TNT`. El endpoint `GET /api/minecraft/explosivos/{id}` consulta mobs persistidos, mientras que `GET /api/minecraft/polimorfismo/explosivos` demuestra ambas implementaciones mediante `List<Explosivo>`. `TNT` no se persiste como mob.
 
 ### 6. Ocultamiento
 
-Las reglas numéricas pertenecen a las clases del dominio. Un POST de Creeper con tiempo de detonación negativo debe devolver HTTP 400 y no crear el registro. Una simulación inválida devuelve HTTP 409 y no agrega una explosión al historial.
+Las invariantes del objeto se protegen en el dominio. El servicio `ExplosionService` valida las condiciones de la simulación y calcula el daño por distancia. Un POST de Creeper con tiempo de detonación negativo debe devolver HTTP 400 y no crear el registro. Una simulación inválida devuelve HTTP 409 y no agrega una explosión al historial.
 
 ### 7. PUT y PATCH
 
@@ -616,6 +594,20 @@ Se creó un Creeper con 20 puntos de salud en `(0,64,0)` y un Zombie con 20 punt
 La distancia fue de dos bloques. El daño calculado fue de 8,5 puntos y la salud del Zombie quedó en 11,5.
 
 La simulación se guardó en H2 y posteriormente se recuperó mediante GET. Un segundo intento de explosión con el mismo Creeper devolvió HTTP 409.
+
+## Licencia
+
+El proyecto se documenta con la licencia **Apache License 2.0**. Se confirmó que existe un archivo `LICENSE` en la raíz del repositorio mediante `Test-Path .\LICENSE` (resultado: `True`). Queda pendiente verificar que el contenido del archivo corresponda efectivamente a Apache 2.0. Texto oficial de referencia: https://www.apache.org/licenses/LICENSE-2.0.
+
+## Estado de correcciones (20/11/2026)
+
+- Commit más reciente confirmado: `c1b271b`.
+- Pruebas completas: 26/26 aprobadas (`BUILD SUCCESS`).
+- `Creeper` y `TNT` implementan `Explosivo`.
+- El endpoint de polimorfismo de explosivos fue comprobado mediante HTTP.
+- La simulación del Ghast está delegada a `MobHostilService`.
+- Confirmado en código: `Vaca extends Animal`, `AldeanoArmero extends Aldeano`, y sus métodos `emitirSonido()`.
+- Confirmado: existe `LICENSE` en la raíz. Pendiente: comprobar su contenido para verificar Apache 2.0.
 
 ## Enlace al commit de POO-08
 
