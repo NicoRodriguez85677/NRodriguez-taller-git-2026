@@ -56,6 +56,12 @@ public class Creeper extends MobHostil implements Explosivo{
 			}
 		}
 	}
+
+	@Override
+	public boolean puedeExplotar() {
+    	return estaViva() && !detonando && !explotado;
+	}
+
 	@Override
 	public boolean explotar() {
 		if (!detonando || explotado || !estaViva()) {
@@ -94,5 +100,8 @@ public double calcularDanoExplosion(Entidad objetivo) {
     return Math.max(0,
             getFuerzaAtaque() * (1 - distancia / radio));
 }
-
+	@Override
+	public String tipoAtaque() {
+    			return "Explosion";
+}
 }

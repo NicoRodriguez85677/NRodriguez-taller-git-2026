@@ -5,4 +5,5 @@ public interface Explosivo {
 
     boolean explotar();
 
+    boolean puedeExplotar();
 }

@@ -55,4 +55,8 @@ public class Zombie extends MobHostil {
 		}
 		super.tick();
 	}
+	@Override
+	public String tipoAtaque() {
+    		return "Golpe cuerpo a cuerpo";
+		}
 }

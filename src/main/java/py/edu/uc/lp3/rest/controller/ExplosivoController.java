@@ -3,14 +3,10 @@ package py.edu.uc.lp3.rest.controller;
 
 import java.util.UUID;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import py.edu.uc.lp3.exception.AccionIlegalException;
 import py.edu.uc.lp3.exception.MobNoEncontradoException;
-import py.edu.uc.lp3.minecraft.Creeper;
 import py.edu.uc.lp3.minecraft.Explosivo;
 import py.edu.uc.lp3.minecraft.MobHostil;
 import py.edu.uc.lp3.repository.MobHostilRepository;
@@ -38,17 +34,16 @@ public class ExplosivoController {
         MobHostil mob = repository.findById(id)
                 .orElseThrow(() -> new MobNoEncontradoException(id));
 
-        if (!(mob instanceof Explosivo)) {
+        if (!(mob instanceof Explosivo explosivo)) {
             throw new AccionIlegalException(
                     "El mob no implementa la interface Explosivo");
         }
 
-        Creeper creeper = (Creeper) mob;
-
         return new ExplosivoRespuesta(
-                creeper.getId(),
-                creeper.getClass().getSimpleName(),
+                mob.getId(),
+                mob.getClass().getSimpleName(),
                 Explosivo.class.getSimpleName(),
-                creeper.estaViva() && !creeper.estaDetonando());
+                explosivo.puedeExplotar());
     }
 }
+

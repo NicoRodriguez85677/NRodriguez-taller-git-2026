@@ -12,7 +12,7 @@ import jakarta.persistence.DiscriminatorColumn;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "clase_mob")
-public abstract class MobHostil extends SerVivo {
+public abstract class MobHostil extends SerVivo implements Atacante {
 
     private double fuerzaAtaque;
     private double alcanceVision;
@@ -79,4 +79,8 @@ public abstract class MobHostil extends SerVivo {
                 "El objetivo no puede ser nulo");
         objetivo.recibirDano(fuerzaAtaque);
     }
+	@Override
+	public String tipoAtaque() {
+    	return "Ataque cuerpo a cuerpo";
+}
 }
