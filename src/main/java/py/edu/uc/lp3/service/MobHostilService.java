@@ -107,4 +107,68 @@ public class MobHostilService {
     public void eliminar(UUID id) {
         repository.delete(buscar(id));
     }
+@Transactional(readOnly = true)
+public Entidad buscarObjetivo(MobHostil mob, List<Entidad> entidades) {
+    if (mob == null) {
+        throw new IllegalArgumentException(
+                "El mob no puede ser nulo");
+    }
+
+    if (entidades == null) {
+        throw new IllegalArgumentException(
+                "La lista de entidades no puede ser nula");
+    }
+
+    Entidad masCercana = null;
+    double menorDistancia = Double.MAX_VALUE;
+
+    for (Entidad entidad : entidades) {
+        if (entidad == null || entidad == mob || !entidad.estaViva()) {
+            continue;
+        }
+
+        double distancia = mob.getPosicion()
+                .distanciaA(entidad.getPosicion());
+
+        if (distancia <= mob.getAlcanceVision()
+                && distancia < menorDistancia) {
+            menorDistancia = distancia;
+            masCercana = entidad;
+        }
+    }
+
+    return masCercana;
+}
+
+public ResultadoAtaqueGhast simularAtaqueGhast(
+        double x, double y, double z) {
+
+    Vector3D posicionGhast = posicion(x, y, z);
+
+    Ghast ghast = new Ghast(posicionGhast);
+    MobHostil atacante = ghast;
+
+    Entidad objetivo = new Zombie(
+            new Vector3D(x + 1, y, z));
+
+    atacante.atacar(objetivo);
+
+    return new ResultadoAtaqueGhast(
+            atacante.getNombre(),
+            atacante.getTipo(),
+            atacante.getPosicion(),
+            objetivo.getNombre(),
+            objetivo.getSalud(),
+            ghast.getTicksEnfriamientoAtaque());
+}
+
+public record ResultadoAtaqueGhast(
+        String atacante,
+        TipoEntidad tipo,
+        Vector3D posicion,
+        String objetivo,
+        double saludObjetivo,
+        int ticksEnfriamiento) {
+}
+
 }
