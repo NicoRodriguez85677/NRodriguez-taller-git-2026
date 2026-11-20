@@ -39,4 +39,36 @@ class PolimorfismoTest {
 				.andExpect(jsonPath("$[1].tipo").value("CERDO"))
 				.andExpect(jsonPath("$[1].sonido").value("Oinc oinc"));
 	}
+@Test
+void creeperYZombieImplementanAtacante() {
+    Atacante creeper = new Creeper(
+            new Vector3D(0, 64, 0));
+
+    Atacante zombie = new Zombie(
+            new Vector3D(10, 64, 0));
+
+    assertThat(creeper.getFuerzaAtaque())
+            .isEqualTo(17.0);
+
+    assertThat(zombie.getFuerzaAtaque())
+            .isEqualTo(3.0);
+
+    assertThat(creeper.tipoAtaque())
+            .isNotEqualTo(zombie.tipoAtaque());
+}
+
+@Test
+void endpointExponeTiposDeAtaque() throws Exception {
+    mockMvc.perform(get(
+            "/api/minecraft/polimorfismo/tipos-ataque"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].clase")
+                    .value("Creeper"))
+            .andExpect(jsonPath("$[0].fuerzaAtaque")
+                    .value(17.0))
+            .andExpect(jsonPath("$[1].clase")
+                    .value("Zombie"))
+            .andExpect(jsonPath("$[1].fuerzaAtaque")
+                    .value(3.0));
+}
 }
