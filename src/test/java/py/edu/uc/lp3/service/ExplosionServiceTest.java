@@ -1,6 +1,6 @@
 
 package py.edu.uc.lp3.service;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -150,4 +150,89 @@ class ExplosionServiceTest {
         verify(mobs, never()).save(any());
         verify(simulaciones, never()).save(any());
     }
+
+    @Test
+    void creeperMuertoNoPuedeExplotar() {
+        Creeper creeper = new Creeper(new Vector3D(0, 64, 0));
+        Zombie objetivo = new Zombie(new Vector3D(2, 64, 0));
+
+        creeper.recibirDano(20);
+
+        when(mobs.findById(creeper.getId()))
+                .thenReturn(Optional.of(creeper));
+        when(mobs.findById(objetivo.getId()))
+                .thenReturn(Optional.of(objetivo));
+
+        assertThrows(
+                AccionIlegalException.class,
+                () -> service.simular(creeper.getId(), objetivo.getId()));
+
+        verify(mobs, never()).save(any());
+        verify(simulaciones, never()).save(any());
+    }
+
+    @Test
+    void creeperDetonandoNoPuedeVolverAExplotar() {
+        Creeper creeper = new Creeper(new Vector3D(0, 64, 0));
+        Zombie objetivo = new Zombie(new Vector3D(2, 64, 0));
+
+        creeper.comenzarDetonacion();
+
+        when(mobs.findById(creeper.getId()))
+                .thenReturn(Optional.of(creeper));
+        when(mobs.findById(objetivo.getId()))
+                .thenReturn(Optional.of(objetivo));
+
+        assertThrows(
+                AccionIlegalException.class,
+                () -> service.simular(creeper.getId(), objetivo.getId()));
+
+        verify(mobs, never()).save(any());
+        verify(simulaciones, never()).save(any());
+    }
+
+    @Test
+    void objetivoMuertoNoPuedeRecibirExplosion() {
+        Creeper creeper = new Creeper(new Vector3D(0, 64, 0));
+        Zombie objetivo = new Zombie(new Vector3D(2, 64, 0));
+
+        objetivo.recibirDano(20);
+
+        when(mobs.findById(creeper.getId()))
+                .thenReturn(Optional.of(creeper));
+        when(mobs.findById(objetivo.getId()))
+                .thenReturn(Optional.of(objetivo));
+
+        assertThrows(
+                AccionIlegalException.class,
+                () -> service.simular(creeper.getId(), objetivo.getId()));
+
+        verify(mobs, never()).save(any());
+        verify(simulaciones, never()).save(any());
+    }
+
+    @Test
+    void creeperQueYaExplotoNoPuedeVolverAExplotar() {
+        Creeper creeper = new Creeper(new Vector3D(0, 64, 0));
+        Zombie objetivo = new Zombie(new Vector3D(2, 64, 0));
+
+        creeper.comenzarDetonacion();
+        creeper.explotar();
+
+        when(mobs.findById(creeper.getId()))
+                .thenReturn(Optional.of(creeper));
+        when(mobs.findById(objetivo.getId()))
+                .thenReturn(Optional.of(objetivo));
+
+        AccionIlegalException error = assertThrows(
+                AccionIlegalException.class,
+                () -> service.simular(creeper.getId(), objetivo.getId()));
+
+        assertEquals("El Creeper ya exploto", error.getMessage());
+
+        verify(mobs, never()).save(any());
+        verify(simulaciones, never()).save(any());
+    }
+
+
 }

@@ -55,21 +55,33 @@ public class ExplosionService {
                     "El Creeper no puede ser su propio objetivo");
         }
 
+
+
+if (creeper.yaExploto()) {
+    throw new AccionIlegalException(
+            "El Creeper ya exploto");
+}
         if (!creeper.estaViva() || !objetivo.estaViva()) {
             throw new AccionIlegalException(
                     "Los mobs deben estar vivos");
         }
 
-        if (creeper.estaDetonando()) {
-            throw new AccionIlegalException(
-                    "El Creeper ya esta detonando");
-        }
+
+if (creeper.estaDetonando()) {
+    throw new AccionIlegalException(
+            "El Creeper ya esta detonando");
+}
 
         double distancia = creeper.getPosicion()
                 .distanciaA(objetivo.getPosicion());
 
         double saludAntes = objetivo.getSalud();
-        double dano = creeper.calcularDanoExplosion(objetivo);
+        double radio = 4.0;
+double fuerzaAtaque = creeper.getFuerzaAtaque();
+
+double dano = distancia > radio
+        ? 0
+        : Math.max(0, fuerzaAtaque * (1 - distancia / radio));
 
         creeper.comenzarDetonacion();
 

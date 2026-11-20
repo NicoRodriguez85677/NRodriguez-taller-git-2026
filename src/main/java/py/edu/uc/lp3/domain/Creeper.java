@@ -37,6 +37,9 @@ public class Creeper extends MobHostil implements Explosivo{
 	public boolean estaDetonando() {
 		return detonando;
 	}
+public boolean yaExploto() {
+return explotado;
+}
 
 	public void comenzarDetonacion() {
 		this.detonando = true;
@@ -82,24 +85,7 @@ public class Creeper extends MobHostil implements Explosivo{
 		}
 		super.tick();
 	}
-public double calcularDanoExplosion(Entidad objetivo) {
-    if (objetivo == null) {
-        throw new IllegalArgumentException(
-                "El objetivo no puede ser nulo");
-    }
 
-    double distancia = getPosicion()
-            .distanciaA(objetivo.getPosicion());
-
-    double radio = 4.0;
-
-    if (distancia > radio) {
-        return 0;
-    }
-
-    return Math.max(0,
-            getFuerzaAtaque() * (1 - distancia / radio));
-}
 	@Override
 	public String tipoAtaque() {
     			return "Explosion";
