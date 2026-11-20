@@ -43,7 +43,34 @@ public class PolimorfismoController {
                         atacante.tipoAtaque()))
                 .toList();
     }
+@GetMapping("/explosivos")
+public List<ExplosionRespuesta> demostrarExplosivos() {
 
+    Creeper creeper = new Creeper(new Vector3D(0, 64, 0));
+    TNT tnt = new TNT();
+
+    List<Explosivo> explosivos = List.of(creeper, tnt);
+
+    boolean creeperDisponible = creeper.puedeExplotar();
+
+    creeper.comenzarDetonacion();
+    tnt.encender();
+
+    return explosivos.stream()
+            .map(explosivo -> new ExplosionRespuesta(
+                    explosivo.getClass().getSimpleName(),
+                    explosivo == creeper
+                            ? creeperDisponible
+                            : explosivo.puedeExplotar(),
+                    explosivo.explotar()))
+            .toList();
+}
+
+public record ExplosionRespuesta(
+        String clase,
+        boolean podiaExplotar,
+        boolean exploto) {
+}
     public record SonidoEntidad(
             String nombre,
             TipoEntidad tipo,
