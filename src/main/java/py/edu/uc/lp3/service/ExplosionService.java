@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import py.edu.uc.lp3.exception.AccionIlegalException;
 import py.edu.uc.lp3.exception.MobNoEncontradoException;
-import py.edu.uc.lp3.minecraft.Creeper;
-import py.edu.uc.lp3.minecraft.MobHostil;
-import py.edu.uc.lp3.minecraft.SimulacionExplosion;
+import py.edu.uc.lp3.domain.Creeper;
+import py.edu.uc.lp3.domain.MobHostil;
+import py.edu.uc.lp3.domain.SimulacionExplosion;
 import py.edu.uc.lp3.repository.MobHostilRepository;
 import py.edu.uc.lp3.repository.SimulacionExplosionRepository;
 

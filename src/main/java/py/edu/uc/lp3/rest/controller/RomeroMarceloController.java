@@ -5,12 +5,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import py.edu.uc.lp3.minecraft.Entidad;
-import py.edu.uc.lp3.minecraft.Ghast;
-import py.edu.uc.lp3.minecraft.MobHostil;
-import py.edu.uc.lp3.minecraft.TipoEntidad;
-import py.edu.uc.lp3.minecraft.Vector3D;
-import py.edu.uc.lp3.minecraft.Zombie;
+import py.edu.uc.lp3.domain.Entidad;
+import py.edu.uc.lp3.domain.Ghast;
+import py.edu.uc.lp3.domain.MobHostil;
+import py.edu.uc.lp3.domain.TipoEntidad;
+import py.edu.uc.lp3.domain.Vector3D;
+import py.edu.uc.lp3.domain.Zombie;
 
 @RestController
 @RequestMapping("/api/minecraft/ghast")

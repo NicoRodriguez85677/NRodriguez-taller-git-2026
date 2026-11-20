@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import py.edu.uc.lp3.minecraft.*;
+import py.edu.uc.lp3.domain.*;
 import py.edu.uc.lp3.repository.MobHostilRepository;
 import py.edu.uc.lp3.exception.MobNoEncontradoException;
 @RestController

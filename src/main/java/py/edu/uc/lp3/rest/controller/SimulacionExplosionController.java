@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import py.edu.uc.lp3.minecraft.SimulacionExplosion;
+import py.edu.uc.lp3.domain.SimulacionExplosion;
 import py.edu.uc.lp3.service.ExplosionService;
 
 @RestController

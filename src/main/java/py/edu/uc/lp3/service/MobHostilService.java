@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import py.edu.uc.lp3.exception.MobNoEncontradoException;
-import py.edu.uc.lp3.minecraft.*;
+import py.edu.uc.lp3.domain.*;
 import py.edu.uc.lp3.repository.MobHostilRepository;
 
 @Service

@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import py.edu.uc.lp3.exception.AccionIlegalException;
 import py.edu.uc.lp3.exception.MobNoEncontradoException;
-import py.edu.uc.lp3.minecraft.Explosivo;
-import py.edu.uc.lp3.minecraft.MobHostil;
+import py.edu.uc.lp3.domain.Explosivo;
+import py.edu.uc.lp3.domain.MobHostil;
 import py.edu.uc.lp3.repository.MobHostilRepository;
 
 @RestController

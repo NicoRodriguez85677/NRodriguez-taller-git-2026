@@ -4,9 +4,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import py.edu.uc.lp3.minecraft.Jugador;
-import py.edu.uc.lp3.minecraft.TipoEntidad;
-import py.edu.uc.lp3.minecraft.Vector3D;
+import py.edu.uc.lp3.domain.Jugador;
+import py.edu.uc.lp3.domain.TipoEntidad;
+import py.edu.uc.lp3.domain.Vector3D;
 
 @RestController
 public class IndexController {

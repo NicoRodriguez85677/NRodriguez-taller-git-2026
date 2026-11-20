@@ -1,4 +1,4 @@
-package py.edu.uc.lp3.minecraft;
+package py.edu.uc.lp3.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.DiscriminatorValue;
 @Entity

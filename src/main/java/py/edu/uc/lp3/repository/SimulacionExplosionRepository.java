@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import py.edu.uc.lp3.minecraft.SimulacionExplosion;
+import py.edu.uc.lp3.domain.SimulacionExplosion;
 
 public interface SimulacionExplosionRepository
         extends JpaRepository<SimulacionExplosion, UUID> {
