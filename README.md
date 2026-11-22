@@ -1,6 +1,37 @@
 # NRodriguez-taller-git-2026
 Taller Git 2026 - Modelado POO Minecraft con Spring Boot
 
+## POO-09 — OpenAPI 3 (preparacion individual)
+
+**Estado:** cambios de OpenAPI preparados en la rama `feat/poo09-openapi-2026`.
+Falta verificar compilacion y arranque en una maquina con Maven y Java 21.
+**No es una entrega final:** falta integrar los OpenAPI verdaderos de A2 y A3, el escenario y sus pruebas.
+
+### Como iniciar
+
+```bash
+./mvnw spring-boot:run
+```
+
+En Windows PowerShell: `.\mvnw.cmd spring-boot:run`.
+
+- OpenAPI JSON: http://localhost:8080/v3/api-docs
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
+- API base: http://localhost:8080/api/minecraft
+
+El OpenAPI debe incluir el CRUD de mobs, la consulta de Explosivo y la simulacion de explosiones con sus codigos de error.
+
+**Reglas propias (A1):** detonacion de Creeper solo si su estado lo permite; dano por distancia dentro de un radio de cuatro bloques. La simulacion guardada permite demostrar ambas.
+
+**Mapa del grupo (pendiente de completar con los datos reales):**
+- A1: Nicolas Rodriguez, servicio Minecraft de este repositorio, puerto local 8080.
+- A2: falta nombre, repositorio, URL base y OpenAPI.
+- A3: falta nombre, repositorio, URL base y OpenAPI.
+
+**Para completar al acordar el grupo:** citar reglas reales de A2 y A3, definir el escenario posible en Minecraft, implementar dos clientes HTTP, registrar el resultado en la H2 de A1 solo si ambas validaciones aceptan, documentar un rechazo atribuible por compañero, preparar Insomnia y los tres comandos de arranque.
+
+---
+
 ## Diagrama de clases del modelo Minecraft
 
 Diagrama generado a partir del código real ubicado en `src/main/java/py/edu/uc/lp3/`, con las clases del dominio en `domain/` y los controladores REST en `rest/controller/`.

@@ -76,3 +76,15 @@ El estudiante realizó las modificaciones en su repositorio, ejecutó los comand
 El asistente proporcionó orientación, ejemplos de implementación y apoyo para detectar y solucionar errores.
 
 El desarrollo se realizó sobre el modelado Minecraft existente, conservando los ejercicios anteriores.
+
+---
+
+## POO-09 — Preparacion individual (22/11/2026)
+
+**Herramienta:** ChatGPT, OpenAI, modelo GPT-6.
+
+**Consultas:** como continuar la POO-08 de Minecraft con el challenge POO-09; habilitar OpenAPI; documentar CRUD, reglas y respuestas de error; distinguir el trabajo individual de la integracion con A2/A3.
+
+**Acciones asistidas:** lectura del enunciado, grupos y ejemplo; inspeccion del repositorio; incorporacion del starter springdoc-openapi 3.0.3 compatible con Spring Boot 4; anotaciones OpenAPI y notas de arranque en README.
+
+**Limitaciones:** no se ejecutaron Maven ni las APIs remotas. No se inventaron contratos de los companeros ni se atribuyo un resultado verificado a este cambio. La colaboracion real, pruebas de rechazo de cada companero y persistencia del escenario siguen pendientes.
