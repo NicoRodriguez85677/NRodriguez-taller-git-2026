@@ -3,13 +3,18 @@ package py.edu.uc.lp3.rest.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import py.edu.uc.lp3.service.JugadorService;
 import py.edu.uc.lp3.domain.Jugador;
 import py.edu.uc.lp3.domain.TipoEntidad;
 import py.edu.uc.lp3.domain.Vector3D;
 
 @RestController
 public class IndexController {
+	private final JugadorService jugadorService;
+
+    public IndexController(JugadorService jugadorService) {
+        this.jugadorService = jugadorService;
+    }
 
 	@GetMapping("/")
 	public EstadoServicio index() {
@@ -26,7 +31,7 @@ public class IndexController {
 			@RequestParam double x,
 			@RequestParam double y,
 			@RequestParam double z) {
-		Jugador jugador = new Jugador(nombre, new Vector3D(x, y, z));
+		Jugador jugador = jugadorService.crearJugador(nombre, x, y, z);
 		return new DetalleJugador(
 				jugador.getNombre(),
 				jugador.getTipo(),

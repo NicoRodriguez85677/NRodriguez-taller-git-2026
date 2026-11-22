@@ -1,7 +1,6 @@
 
 package py.edu.uc.lp3.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Entity;
@@ -48,32 +47,6 @@ public abstract class MobHostil extends SerVivo implements Atacante {
     public double getAlcanceVision() {
         return alcanceVision;
     }
-
-    public Entidad buscarObjetivo(List<Entidad> entidades) {
-        Objects.requireNonNull(entidades,
-                "La lista de entidades no puede ser nula");
-
-        Entidad masCercana = null;
-        double menorDistancia = Double.MAX_VALUE;
-
-        for (Entidad entidad : entidades) {
-            if (entidad == this || !entidad.estaViva()) {
-                continue;
-            }
-
-            double distancia = getPosicion()
-                    .distanciaA(entidad.getPosicion());
-
-            if (distancia <= alcanceVision &&
-                    distancia < menorDistancia) {
-                menorDistancia = distancia;
-                masCercana = entidad;
-            }
-        }
-
-        return masCercana;
-    }
-
     public void atacar(Entidad objetivo) {
         Objects.requireNonNull(objetivo,
                 "El objetivo no puede ser nulo");
