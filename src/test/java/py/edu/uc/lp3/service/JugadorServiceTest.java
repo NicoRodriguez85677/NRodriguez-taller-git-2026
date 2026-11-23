@@ -1,6 +1,6 @@
 
 package py.edu.uc.lp3.service;
-
+import py.edu.uc.lp3.domain.Vector3D;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -35,4 +35,16 @@ class JugadorServiceTest {
                 () -> service.crearJugador(
                         "Steve", Double.NaN, 64, 0));
     }
+    @Test
+void constructorJugadorRechazaNombresInvalidos() {
+    assertThrows(
+            IllegalArgumentException.class,
+            () -> new Jugador(" ", new Vector3D(0, 64, 0)));
+
+    assertThrows(
+            IllegalArgumentException.class,
+            () -> new Jugador(null, new Vector3D(0, 64, 0)));
+}
+
+
 }

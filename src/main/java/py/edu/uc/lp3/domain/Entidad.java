@@ -35,11 +35,6 @@ public abstract class Entidad {
         this.tipo = Objects.requireNonNull(tipo,
                 "El tipo de entidad no puede ser nulo");
 
-        if (nombre == null || nombre.isBlank()) {
-            throw new IllegalArgumentException(
-                    "El nombre no puede estar vacio");
-        }
-
         if (!Double.isFinite(salud) || salud < 0) {
             throw new IllegalArgumentException(
                     "La salud debe ser finita y no negativa");
