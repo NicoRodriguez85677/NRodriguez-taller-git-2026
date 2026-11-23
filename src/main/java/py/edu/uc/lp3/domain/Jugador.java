@@ -44,13 +44,6 @@ public class Jugador extends SerVivo {
 		nivelExperiencia += cantidad;
 	}
 
-	public void atacar(Entidad objetivo) {
-		if (objetivo == null) {
-			throw new IllegalArgumentException("El objetivo no puede ser nulo");
-		}
-		objetivo.recibirDano(1);
-	}
-
 	public boolean recoger(Item item) {
 		return inventario.agregar(item);
 	}

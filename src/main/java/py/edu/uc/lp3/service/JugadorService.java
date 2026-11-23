@@ -2,7 +2,7 @@
 package py.edu.uc.lp3.service;
 
 import org.springframework.stereotype.Service;
-
+import py.edu.uc.lp3.domain.Entidad;
 import py.edu.uc.lp3.domain.Jugador;
 import py.edu.uc.lp3.domain.Vector3D;
 
@@ -26,4 +26,20 @@ public class JugadorService {
 
         return new Jugador(nombre, new Vector3D(x, y, z));
     }
+
+public void atacar(Jugador jugador, Entidad objetivo) {
+
+    if (jugador == null) {
+        throw new IllegalArgumentException(
+                "El jugador no puede ser nulo");
+    }
+
+    if (objetivo == null) {
+        throw new IllegalArgumentException(
+                "El objetivo no puede ser nulo");
+    }
+
+    objetivo.recibirDano(1);
+}
+
 }
