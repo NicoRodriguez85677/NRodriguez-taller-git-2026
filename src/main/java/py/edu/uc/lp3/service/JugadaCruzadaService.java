@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 import py.edu.uc.lp3.domain.JugadaCruzada;
 import py.edu.uc.lp3.repository.JugadaCruzadaRepository;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.server.ResponseStatusException;
+
 @Service
 public class JugadaCruzadaService {
 
@@ -49,18 +53,38 @@ public class JugadaCruzadaService {
                     "Los identificadores son obligatorios");
         }
 
-        Decision a2 = Objects.requireNonNull(
-                validador.evaluarA2(creeperId, objetivoId),
-                "A2 no devolvio una decision");
+
+        Decision a2;
+
+        try {
+            a2 = Objects.requireNonNull(
+                    validador.evaluarA2(creeperId, objetivoId),
+                    "A2 no devolvio una decision");
+        } catch (RestClientException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "No se pudo consultar la API de A2", e);
+        }
+
 
         if (!a2.aceptada()) {
             return new Resultado(
                     false, "A2", a2.motivo(), null);
         }
 
-        Decision a3 = Objects.requireNonNull(
-                validador.evaluarA3(creeperId, objetivoId),
-                "A3 no devolvio una decision");
+
+        Decision a3;
+
+        try {
+            a3 = Objects.requireNonNull(
+                    validador.evaluarA3(creeperId, objetivoId),
+                    "A3 no devolvio una decision");
+        } catch (RestClientException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "No se pudo consultar la API de A3", e);
+        }
+
 
         if (!a3.aceptada()) {
             return new Resultado(

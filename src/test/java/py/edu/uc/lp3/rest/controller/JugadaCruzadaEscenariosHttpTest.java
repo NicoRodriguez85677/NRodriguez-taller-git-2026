@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.UUID;
-
+import org.springframework.web.client.ResourceAccessException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -111,4 +111,42 @@ class JugadaCruzadaEscenariosHttpTest {
 
         assertThat(repositorio.count()).isEqualTo(antes + 1);
     }
+
+@Test
+void errorConexionA2Devuelve503YNoGuarda() throws Exception {
+    long antes = repositorio.count();
+
+    when(validador.evaluarA2(CREEPER_ID, OBJETIVO_ID))
+            .thenThrow(new ResourceAccessException(
+                    "No se pudo conectar con A2"));
+
+    mockMvc.perform(post("/api/minecraft/jugadas-cruzadas")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(SOLICITUD))
+            .andExpect(status().isServiceUnavailable());
+
+    assertThat(repositorio.count()).isEqualTo(antes);
+
+    verify(validador, never()).evaluarA3(any(), any());
+}
+
+@Test
+void errorConexionA3Devuelve503YNoGuarda() throws Exception {
+    long antes = repositorio.count();
+
+    when(validador.evaluarA2(CREEPER_ID, OBJETIVO_ID))
+            .thenReturn(new Decision(true, "Aceptado"));
+
+    when(validador.evaluarA3(CREEPER_ID, OBJETIVO_ID))
+            .thenThrow(new ResourceAccessException(
+                    "No se pudo conectar con A3"));
+
+    mockMvc.perform(post("/api/minecraft/jugadas-cruzadas")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(SOLICITUD))
+            .andExpect(status().isServiceUnavailable());
+
+    assertThat(repositorio.count()).isEqualTo(antes);
+}
+
 }
