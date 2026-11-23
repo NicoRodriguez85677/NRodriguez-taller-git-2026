@@ -57,20 +57,22 @@ public class ExplosionService {
 
 
 
-if (creeper.yaExploto()) {
-    throw new AccionIlegalException(
-            "El Creeper ya exploto");
-}
+
+        if (creeper.yaExploto()) {
+            throw new AccionIlegalException(
+                    "El Creeper ya exploto");
+        }
+
         if (!creeper.estaViva() || !objetivo.estaViva()) {
             throw new AccionIlegalException(
                     "Los mobs deben estar vivos");
         }
 
+        if (creeper.estaDetonando()) {
+            throw new AccionIlegalException(
+                    "El Creeper ya esta detonando");
+        }
 
-if (creeper.estaDetonando()) {
-    throw new AccionIlegalException(
-            "El Creeper ya esta detonando");
-}
 
         double distancia = creeper.getPosicion()
                 .distanciaA(objetivo.getPosicion());
