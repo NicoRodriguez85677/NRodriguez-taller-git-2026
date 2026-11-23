@@ -62,4 +62,27 @@ class ExplosivoTest {
         assertThat(explosivo.explotar()).isTrue();
         assertThat(explosivo.puedeExplotar()).isFalse();
     }
+
+@Test
+void creeperExplotaDespuesDeTresTicks() {
+    Creeper creeper = new Creeper(new Vector3D(0, 64, 0));
+
+    assertThat(creeper.puedeExplotar()).isTrue();
+
+    creeper.comenzarDetonacion();
+
+    creeper.tick();
+    creeper.tick();
+
+    assertThat(creeper.yaExploto()).isFalse();
+
+    creeper.tick();
+
+    assertThat(creeper.yaExploto()).isTrue();
+    assertThat(creeper.estaViva()).isFalse();
+
+    // No puede explotar dos veces.
+    assertThat(creeper.explotar()).isFalse();
+}
+
 }
