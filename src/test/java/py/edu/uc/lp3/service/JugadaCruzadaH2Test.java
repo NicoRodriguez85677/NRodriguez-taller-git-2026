@@ -12,6 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import py.edu.uc.lp3.repository.JugadaCruzadaRepository;
+import py.edu.uc.lp3.repository.MobHostilRepository;
+import py.edu.uc.lp3.domain.Creeper;
+import py.edu.uc.lp3.domain.Vector3D;
 import py.edu.uc.lp3.service.JugadaCruzadaService.Decision;
 import py.edu.uc.lp3.service.JugadaCruzadaService.ValidadorExterno;
 
@@ -22,21 +25,24 @@ class JugadaCruzadaH2Test {
     @Autowired
     private JugadaCruzadaRepository repositorio;
 
+    @Autowired
+    private MobHostilRepository mobs;
+
     @Test
     void rechazoA2NoModificaH2() {
         long cantidadAntes = repositorio.count();
 
-        UUID creeperId = UUID.randomUUID();
+        UUID creeperId = mobs.save(new Creeper(new Vector3D(0, 0, 0))).getId();
         UUID objetivoId = UUID.randomUUID();
 
         ValidadorExterno validador =
                 mock(ValidadorExterno.class);
 
-        when(validador.evaluarA2(creeperId, objetivoId))
+        when(validador.evaluarA2(0))
                 .thenReturn(new Decision(false, "Rechazado por A2"));
 
         JugadaCruzadaService service =
-                new JugadaCruzadaService(repositorio, validador);
+                new JugadaCruzadaService(repositorio, mobs, validador);
 
         var resultado = service.ejecutar(creeperId, objetivoId);
 
@@ -49,20 +55,20 @@ class JugadaCruzadaH2Test {
     void rechazoA3NoModificaH2() {
         long cantidadAntes = repositorio.count();
 
-        UUID creeperId = UUID.randomUUID();
+        UUID creeperId = mobs.save(new Creeper(new Vector3D(0, 0, 0))).getId();
         UUID objetivoId = UUID.randomUUID();
 
         ValidadorExterno validador =
                 mock(ValidadorExterno.class);
 
-        when(validador.evaluarA2(creeperId, objetivoId))
+        when(validador.evaluarA2(0))
                 .thenReturn(new Decision(true, "Aceptado"));
 
-        when(validador.evaluarA3(creeperId, objetivoId))
+        when(validador.evaluarA3(objetivoId))
                 .thenReturn(new Decision(false, "Rechazado por A3"));
 
         JugadaCruzadaService service =
-                new JugadaCruzadaService(repositorio, validador);
+                new JugadaCruzadaService(repositorio, mobs, validador);
 
         var resultado = service.ejecutar(creeperId, objetivoId);
 
@@ -75,20 +81,20 @@ class JugadaCruzadaH2Test {
     void ambasAceptanYSeGuardaEnH2() {
         long cantidadAntes = repositorio.count();
 
-        UUID creeperId = UUID.randomUUID();
+        UUID creeperId = mobs.save(new Creeper(new Vector3D(0, 0, 0))).getId();
         UUID objetivoId = UUID.randomUUID();
 
         ValidadorExterno validador =
                 mock(ValidadorExterno.class);
 
-        when(validador.evaluarA2(creeperId, objetivoId))
+        when(validador.evaluarA2(0))
                 .thenReturn(new Decision(true, "Aceptado"));
 
-        when(validador.evaluarA3(creeperId, objetivoId))
+        when(validador.evaluarA3(objetivoId))
                 .thenReturn(new Decision(true, "Aceptado"));
 
         JugadaCruzadaService service =
-                new JugadaCruzadaService(repositorio, validador);
+                new JugadaCruzadaService(repositorio, mobs, validador);
 
         var resultado = service.ejecutar(creeperId, objetivoId);
 

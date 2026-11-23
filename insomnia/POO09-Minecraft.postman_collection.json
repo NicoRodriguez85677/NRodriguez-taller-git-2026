@@ -1,0 +1,252 @@
+{
+    "info":  {
+                 "name":  "POO-09 Minecraft — Nicolás Rodríguez",
+                 "description":  "Importá este archivo en Insomnia. Completá creeperId con un Creeper de A1. Consultá README.md para configurar los servicios.",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "item":  [
+                 {
+                     "name":  "OpenAPI de A1",
+                     "request":  {
+                                     "method":  "GET",
+                                     "url":  "{{baseA1}}/v3/api-docs",
+                                     "description":  "Documento OpenAPI de Nicolás."
+                                 }
+                 },
+                 {
+                     "name":  "OpenAPI de A2",
+                     "request":  {
+                                     "method":  "GET",
+                                     "url":  "{{baseA2}}/v3/api-docs",
+                                     "description":  "Documento OpenAPI de Amir."
+                                 }
+                 },
+                 {
+                     "name":  "OpenAPI de A3",
+                     "request":  {
+                                     "method":  "GET",
+                                     "url":  "{{baseA3}}/v3/api-docs",
+                                     "description":  "Documento OpenAPI de Sofi."
+                                 }
+                 },
+                 {
+                     "name":  "Buscar Creeper de A1",
+                     "request":  {
+                                     "method":  "GET",
+                                     "url":  "{{baseA1}}/api/minecraft/mobs",
+                                     "description":  "Copiá el id de un CREEPER a creeperId."
+                                 }
+                 },
+                 {
+                     "name":  "Listar jugadas de A1",
+                     "request":  {
+                                     "method":  "GET",
+                                     "url":  "{{baseA1}}/api/minecraft/jugadas-cruzadas",
+                                     "description":  "Ejecutá antes y después de cada caso. Solo el 201 agrega una jugada."
+                                 }
+                 },
+                 {
+                     "name":  "Ambos aceptan (201)",
+                     "request":  {
+                                     "method":  "POST",
+                                     "url":  "{{baseA1}}/api/minecraft/jugadas-cruzadas",
+                                     "description":  "Guarda una jugada en A1.",
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\n  \"creeperId\": \"{{creeperId}}\",\n  \"objetivoId\": \"{{zombieVivoSofiId}}\",\n  \"danio\": 0\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              }
+                                 },
+                     "response":  [
+                                      {
+                                          "name":  "HTTP 201 - evidencia Tailscale",
+                                          "originalRequest":  {
+                                                                  "method":  "POST",
+                                                                  "url":  "{{baseA1}}/api/minecraft/jugadas-cruzadas",
+                                                                  "description":  "Guarda una jugada en A1.",
+                                                                  "header":  [
+                                                                                 {
+                                                                                     "key":  "Content-Type",
+                                                                                     "value":  "application/json"
+                                                                                 }
+                                                                             ],
+                                                                  "body":  {
+                                                                               "mode":  "raw",
+                                                                               "raw":  "{\"creeperId\":\"32da013f-19cb-41cc-8b1a-b10d14ec736d\",\"objetivoId\":\"11111111-1111-1111-1111-111111111111\",\"danio\":0}",
+                                                                               "options":  {
+                                                                                               "raw":  {
+                                                                                                           "language":  "json"
+                                                                                                       }
+                                                                                           }
+                                                                           }
+                                                              },
+                                          "status":  "Created",
+                                          "code":  201,
+                                          "header":  [
+                                                         {
+                                                             "key":  "Content-Type",
+                                                             "value":  "application/json"
+                                                         }
+                                                     ],
+                                          "body":  "{\r\n    \"guardada\":  true,\r\n    \"rechazoDe\":  null,\r\n    \"motivo\":  null,\r\n    \"jugada\":  {\r\n                   \"creeperId\":  \"32da013f-19cb-41cc-8b1a-b10d14ec736d\",\r\n                   \"danio\":  0,\r\n                   \"fecha\":  \"2026-11-23T18:29:39.0001871\",\r\n                   \"id\":  \"0cb6c627-482c-454c-9094-3fd23de2d0c7\",\r\n                   \"objetivoId\":  \"11111111-1111-1111-1111-111111111111\"\r\n               }\r\n}"
+                                      }
+                                  ]
+                 },
+                 {
+                     "name":  "Rechaza Amir (409 A2)",
+                     "request":  {
+                                     "method":  "POST",
+                                     "url":  "{{baseA1}}/api/minecraft/jugadas-cruzadas",
+                                     "description":  "Amir devuelve entidad.viva=false. Sofi no recibe una consulta.",
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\n  \"creeperId\": \"{{creeperId}}\",\n  \"objetivoId\": \"{{zombieVivoSofiId}}\",\n  \"danio\": 25\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              }
+                                 },
+                     "response":  [
+                                      {
+                                          "name":  "HTTP 409 - evidencia Tailscale",
+                                          "originalRequest":  {
+                                                                  "method":  "POST",
+                                                                  "url":  "{{baseA1}}/api/minecraft/jugadas-cruzadas",
+                                                                  "description":  "Amir devuelve entidad.viva=false. Sofi no recibe una consulta.",
+                                                                  "header":  [
+                                                                                 {
+                                                                                     "key":  "Content-Type",
+                                                                                     "value":  "application/json"
+                                                                                 }
+                                                                             ],
+                                                                  "body":  {
+                                                                               "mode":  "raw",
+                                                                               "raw":  "{\"creeperId\":\"32da013f-19cb-41cc-8b1a-b10d14ec736d\",\"objetivoId\":\"11111111-1111-1111-1111-111111111111\",\"danio\":25}",
+                                                                               "options":  {
+                                                                                               "raw":  {
+                                                                                                           "language":  "json"
+                                                                                                       }
+                                                                                           }
+                                                                           }
+                                                              },
+                                          "status":  "Conflict",
+                                          "code":  409,
+                                          "header":  [
+                                                         {
+                                                             "key":  "Content-Type",
+                                                             "value":  "application/json"
+                                                         }
+                                                     ],
+                                          "body":  "{\r\n    \"guardada\":  false,\r\n    \"rechazoDe\":  \"A2\",\r\n    \"motivo\":  \"El Zombie de Amir no sobrevive al ataque\",\r\n    \"jugada\":  null\r\n}"
+                                      }
+                                  ]
+                 },
+                 {
+                     "name":  "Rechaza Sofi (409 A3)",
+                     "request":  {
+                                     "method":  "POST",
+                                     "url":  "{{baseA1}}/api/minecraft/jugadas-cruzadas",
+                                     "description":  "Amir acepta y la entidad ausente en Sofi produce el rechazo A3.",
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\n  \"creeperId\": \"{{creeperId}}\",\n  \"objetivoId\": \"{{objetivoAusenteSofiId}}\",\n  \"danio\": 0\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              }
+                                 },
+                     "response":  [
+                                      {
+                                          "name":  "HTTP 409 - evidencia Tailscale",
+                                          "originalRequest":  {
+                                                                  "method":  "POST",
+                                                                  "url":  "{{baseA1}}/api/minecraft/jugadas-cruzadas",
+                                                                  "description":  "Amir acepta y la entidad ausente en Sofi produce el rechazo A3.",
+                                                                  "header":  [
+                                                                                 {
+                                                                                     "key":  "Content-Type",
+                                                                                     "value":  "application/json"
+                                                                                 }
+                                                                             ],
+                                                                  "body":  {
+                                                                               "mode":  "raw",
+                                                                               "raw":  "{\"creeperId\":\"32da013f-19cb-41cc-8b1a-b10d14ec736d\",\"objetivoId\":\"00000000-0000-4000-8000-000000000009\",\"danio\":0}",
+                                                                               "options":  {
+                                                                                               "raw":  {
+                                                                                                           "language":  "json"
+                                                                                                       }
+                                                                                           }
+                                                                           }
+                                                              },
+                                          "status":  "Conflict",
+                                          "code":  409,
+                                          "header":  [
+                                                         {
+                                                             "key":  "Content-Type",
+                                                             "value":  "application/json"
+                                                         }
+                                                     ],
+                                          "body":  "{\r\n    \"guardada\":  false,\r\n    \"rechazoDe\":  \"A3\",\r\n    \"motivo\":  \"El objetivo de Sofi no es un Zombie vivo\",\r\n    \"jugada\":  null\r\n}"
+                                      }
+                                  ]
+                 }
+             ],
+    "variable":  [
+                     {
+                         "key":  "baseA1",
+                         "value":  "http://100.83.179.97:8080",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "baseA2",
+                         "value":  "http://100.78.121.31:8080",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "baseA3",
+                         "value":  "http://100.79.75.27:8081",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "creeperId",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "zombieVivoSofiId",
+                         "value":  "11111111-1111-1111-1111-111111111111",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "objetivoAusenteSofiId",
+                         "value":  "00000000-0000-4000-8000-000000000009",
+                         "type":  "string"
+                     }
+                 ]
+}

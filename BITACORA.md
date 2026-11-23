@@ -88,3 +88,28 @@ El desarrollo se realizó sobre el modelado Minecraft existente, conservando los
 **Acciones asistidas:** lectura del enunciado, grupos y ejemplo; inspeccion del repositorio; incorporacion del starter springdoc-openapi 3.0.3 compatible con Spring Boot 4; anotaciones OpenAPI y notas de arranque en README.
 
 **Limitaciones:** no se ejecutaron Maven ni las APIs remotas. No se inventaron contratos de los companeros ni se atribuyo un resultado verificado a este cambio. La colaboracion real, pruebas de rechazo de cada companero y persistencia del escenario siguen pendientes.
+
+---
+
+## POO-09 — Integración y evidencia (23/11/2026)
+
+**Herramienta:** ChatGPT, OpenAI, GPT-6.
+
+**Pedido del estudiante:** continuar la integración con Amir y Sofi desde los
+cambios locales, conservar el servidor activo y preparar los entregables.
+
+**Trabajo asistido:** se conectaron los clientes HTTP al flujo A2 → A3, se
+incorporó la comprobación del Creeper de A1 y se guardó el daño en las jugadas
+aceptadas. También se actualizaron OpenAPI, README, las pruebas y la
+colección importable en Insomnia con las tres respuestas capturadas.
+
+**Verificación:** Maven pasó 63 pruebas con H2 en memoria. Los tres OpenAPI
+respondieron por Tailscale. En una segunda instancia de A1 con H2 aislada,
+Amir y Sofi aceptaron el caso feliz (HTTP 201 y una fila nueva). Los rechazos
+de Amir y Sofi devolvieron HTTP 409 con su origen y conservaron las filas.
+El estudiante había aportado las direcciones, el contrato observado y el UUID
+del Zombie vivo. La prueba confirmó también el UUID ausente en Sofi.
+
+**Alcance:** la revisión de POO-08 se omitió por indicación del estudiante.
+Quedan pendientes las referencias de Git de los compañeros, la comprobación
+de sus comandos de arranque desde clones y el enlace final de entrega.

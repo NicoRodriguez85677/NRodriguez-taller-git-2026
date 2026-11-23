@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -33,13 +34,20 @@ public class JugadaCruzadaController {
     }
 
     public record SolicitudJugada(
-            UUID creeperId,
-            UUID objetivoId) {
+            @Schema(description = "UUID de un Creeper existente en A1") UUID creeperId,
+            @Schema(description = "UUID del objetivo en la API de Sofi") UUID objetivoId,
+            @Schema(description = "Danio simulado en Amir", minimum = "0", defaultValue = "0") Integer danio) {
+
+        public SolicitudJugada {
+            if (danio == null) {
+                danio = 0;
+            }
+        }
     }
 
     @Operation(
         summary = "Ejecutar jugada cruzada",
-        description = "Consulta A2 y A3. Solo guarda en H2 si ambos aceptan."
+        description = "Amir valida que su Zombie sobreviva al danio. Luego Sofi valida que el objetivo exista y sea un Zombie vivo. A1 guarda la jugada si ambos aceptan."
     )
     @ApiResponse(
         responseCode = "201",
@@ -57,13 +65,15 @@ public class JugadaCruzadaController {
         responseCode = "503",
         description = "API externa no disponible"
     )
+    @ApiResponse(responseCode = "404", description = "No existe el Creeper local")
     @PostMapping
     public ResponseEntity<Resultado> ejecutar(
             @RequestBody SolicitudJugada solicitud) {
 
         Resultado resultado = service.ejecutar(
                 solicitud.creeperId(),
-                solicitud.objetivoId());
+                solicitud.objetivoId(),
+                solicitud.danio());
 
         if (!resultado.guardada()) {
             return ResponseEntity

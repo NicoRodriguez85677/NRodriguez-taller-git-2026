@@ -19,12 +19,18 @@ public class JugadaCruzada {
     private UUID creeperId;
     private UUID objetivoId;
     private LocalDateTime fecha;
+    private Integer danio;
 
     // Constructor requerido por JPA
     protected JugadaCruzada() {
     }
 
     public JugadaCruzada(UUID creeperId, UUID objetivoId) {
+        this(creeperId, objetivoId, null);
+    }
+
+    public JugadaCruzada(UUID creeperId, UUID objetivoId, Integer danio) {
+        this.danio = danio;
         this.creeperId = creeperId;
         this.objetivoId = objetivoId;
         this.fecha = LocalDateTime.now();
@@ -40,6 +46,10 @@ public class JugadaCruzada {
 
     public UUID getObjetivoId() {
         return objetivoId;
+    }
+
+    public Integer getDanio() {
+        return danio;
     }
 
     public LocalDateTime getFecha() {

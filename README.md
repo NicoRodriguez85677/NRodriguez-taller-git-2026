@@ -1,35 +1,113 @@
 # NRodriguez-taller-git-2026
 Taller Git 2026 - Modelado POO Minecraft con Spring Boot
 
-## POO-09 — OpenAPI 3 (preparacion individual)
+## POO-09 — APIs cruzadas
 
-**Estado:** cambios de OpenAPI preparados en la rama `feat/poo09-openapi-2026`.
-Falta verificar compilacion y arranque en una maquina con Maven y Java 21.
-**No es una entrega final:** falta integrar los OpenAPI verdaderos de A2 y A3, el escenario y sus pruebas.
+A1 (Nicolás) valida un ataque simulado contra un Zombie. Primero consulta a
+Amir (A2) con `GET /entidad/zombie?danio={danio}` y comprueba `entidad.viva`.
+Si Amir acepta, consulta a Sofi (A3) con `GET /api/entidades/{objetivoId}` y
+comprueba que la entidad sea un `ZOMBIE` con `salud > 0`. Un `404` de Sofi
+cuenta como rechazo de A3. Las dos consultas son de lectura.
 
-### Como iniciar
+### Configuración y OpenAPI
 
-```bash
-./mvnw spring-boot:run
+En la terminal PowerShell desde la que se vaya a iniciar A1, con Tailscale conectado:
+
+```powershell
+$env:POO09_A2_URL = "http://100.78.121.31:8080"
+$env:POO09_A3_URL = "http://100.79.75.27:8081"
+.\mvnw.cmd spring-boot:run
 ```
 
-En Windows PowerShell: `.\mvnw.cmd spring-boot:run`.
+Las variables se leen al iniciar. Si A1 ya está en ejecución en el puerto 8080,
+coordiná el próximo arranque antes de aplicar esta configuración.
 
-- OpenAPI JSON: http://localhost:8080/v3/api-docs
-- Swagger UI: http://localhost:8080/swagger-ui/index.html
-- API base: http://localhost:8080/api/minecraft
+### Grupo Minecraft y OpenAPI
 
-El OpenAPI debe incluir el CRUD de mobs, la consulta de Explosivo y la simulacion de explosiones con sus codigos de error.
-**Reglas propias (A1):** detonacion de Creeper solo si su estado lo permite; dano por distancia dentro de un radio de cuatro bloques. La simulacion guardada permite demostrar ambas.
+| Rol | Integrante | Base por Tailscale | OpenAPI | Dos reglas publicadas |
+| --- | --- | --- | --- | --- |
+| A1 | Nicolás Rodríguez | `http://100.83.179.97:8080` | [OpenAPI A1](http://100.83.179.97:8080/v3/api-docs) | Puede detonar un Creeper vivo que no esté detonando ni haya explotado. El daño de la explosión disminuye con la distancia y tiene un radio máximo de 4 bloques. |
+| A2 | Amir | `http://100.78.121.31:8080` | [OpenAPI A2](http://100.78.121.31:8080/v3/api-docs) | El daño se aplica a una entidad temporal y su estado indica si sigue viva (`GET /entidad/{tipo}`). La previsualización de explosiones usa radio 3 y daño máximo de 20, o 40 si el Creeper está cargado, con caída lineal redondeada. |
+| A3 | Sofi | `http://100.79.75.27:8081` | [OpenAPI A3](http://100.79.75.27:8081/v3/api-docs) | La validación de explosión requiere tres UUID distintos de un Creeper, un Jugador y un Cerdo, con el Creeper vivo. La simulación aplica hasta 20 puntos de daño dentro de 6 bloques y consume la salud del Creeper. |
 
-**Mapa del grupo (pendiente de completar con los datos reales):**
-- A1: Nicolas Rodriguez, servicio Minecraft de este repositorio, puerto local 8080.
-- A2: falta nombre, repositorio, URL base y OpenAPI.
-- A3: falta nombre, repositorio, URL base y OpenAPI.
+La entrega de Nicolás consume a Amir y Sofi. El OpenAPI de Sofi también describe
+una demolición coordinada que consulta a Nicolás y Amir. Las tres URLs de
+OpenAPI respondieron `200` por Tailscale el 23/11/2026. Documentación interactiva en Swagger UI: [Nicolás](http://100.83.179.97:8080/swagger-ui/index.html), [Amir](http://100.78.121.31:8080/swagger-ui/index.html) y [Sofi](http://100.79.75.27:8081/swagger-ui/index.html).
 
-**Para completar al acordar el grupo:** citar reglas reales de A2 y A3, definir el escenario posible en Minecraft, implementar dos clientes HTTP, registrar el resultado en la H2 de A1 solo si ambas validaciones aceptan, documentar un rechazo atribuible por compañero, preparar Insomnia y los tres comandos de arranque.
+Para la jugada de Nicolás, Amir simula el daño sobre un Zombie temporal. Se
+consulta primero porque, si el Zombie no sobrevive, el escenario termina y no
+hace falta consultar a Sofi. En Sofi, `GET /api/entidades/{id}` aporta el tipo
+y la salud de la entidad registrada. A1 acepta ese objetivo solo si existe,
+es Zombie y tiene salud positiva.
+
+Arrancá primero los servicios de Amir (puerto 8080) y Sofi (puerto 8081) en
+sus equipos y comprobá sus OpenAPI. Después arrancá Nicolás con el comando
+y las variables de arriba. Quedan por confirmar los enlaces a los commits
+de los compañeros y sus comandos exactos para reproducir el grupo desde
+clones. La prueba por Tailscale usó los servicios que ya estaban en ejecución.
+
+
+### Demostración
+
+Consultá `GET /api/minecraft/mobs` en A1 y reemplazá `<UUID_CREEPER_A1>`
+por el `id` de una entrada con `tipo: CREEPER`. Enviá cada cuerpo por
+`POST /api/minecraft/jugadas-cruzadas` con `Content-Type: application/json`.
+
+**Ambos aceptan · 201**
+
+```json
+{"creeperId":"<UUID_CREEPER_A1>","objetivoId":"11111111-1111-1111-1111-111111111111","danio":0}
+```
+
+**Rechaza Amir · 409 con `rechazoDe: A2`**
+
+```json
+{"creeperId":"<UUID_CREEPER_A1>","objetivoId":"11111111-1111-1111-1111-111111111111","danio":25}
+```
+
+**Rechaza Sofi · 409 con `rechazoDe: A3`**
+
+```json
+{"creeperId":"<UUID_CREEPER_A1>","objetivoId":"00000000-0000-4000-8000-000000000009","danio":0}
+```
+
+Para el tercer caso, confirmá que ese UUID responde `404` en Sofi o usá otro
+UUID ausente. Para evidenciar la persistencia, compará las respuestas de
+`GET /api/minecraft/jugadas-cruzadas` antes y después de cada POST. Solo el
+`201` agrega una fila con los dos UUID y el daño. La ausencia del Creeper
+local devuelve `404`, los datos inválidos devuelven `400` y los fallos
+remotos devuelven `503`. Si se omite `danio`, se usa cero.
+
+`./mvnw test` (en Windows, `.\mvnw.cmd test`) usa una H2 en memoria.
+`JugadaCruzadaEscenariosHttpTest` reproduce las respuestas de Amir y Sofi con
+servidores HTTP locales y comprueba el orden, el estado de cada respuesta y las
+filas de H2.
+
+
+Importá [la colección de POO-09](insomnia/POO09-Minecraft.postman_collection.json)
+en Insomnia. Configurá `baseA1`, `baseA2` y `baseA3` según el entorno y completá
+`creeperId` con un Creeper de A1. En una H2 nueva, podés crear el Creeper de
+demostración con `POST /api/minecraft/mobs/creepers` y
+`{"x":0,"y":64,"z":0}`. Arrancá una A1 aislada si vas a reproducir la prueba
+sin escribir en H2 de la instancia activa. En PowerShell usá
+`SERVER_ADDRESS=127.0.0.1`, un `SERVER_PORT` libre y
+`SPRING_DATASOURCE_URL=jdbc:h2:mem:poo09-evidencia` como variables de entorno
+antes de ejecutar el comando de arranque. Poné esa base local en `baseA1`.
+
+La colección conserva las respuestas reales del 23/11/2026. A1 se ejecutó
+en loopback con H2 en memoria y llamó a Amir y Sofi por Tailscale.
+
+| Caso | Respuesta de A1 | Filas antes → después |
+| --- | --- | --- |
+| Ambos aceptan | `201`, `guardada: true` | 2 → 3 |
+| Rechaza Amir | `409`, `rechazoDe: A2` | 3 → 3 |
+| Rechaza Sofi | `409`, `rechazoDe: A3` | 3 → 3 |
+
+El `GET` posterior al caso exitoso incluyó el ID de la jugada devuelta por el
+`POST`. Los dos rechazos conservaron el cuerpo completo del listado.
 
 ---
+
 
 ## Diagrama de clases del modelo Minecraft
 

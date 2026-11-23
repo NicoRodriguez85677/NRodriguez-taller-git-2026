@@ -14,8 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import py.edu.uc.lp3.repository.JugadaCruzadaRepository;
+import py.edu.uc.lp3.repository.MobHostilRepository;
+import py.edu.uc.lp3.domain.Creeper;
+import py.edu.uc.lp3.domain.Vector3D;
 
-@SpringBootTest
+@SpringBootTest(properties = "poo09.a2.base-url=")
 @AutoConfigureMockMvc
 @Transactional
 class JugadaCruzadaControllerTest {
@@ -26,18 +29,22 @@ class JugadaCruzadaControllerTest {
     @Autowired
     private JugadaCruzadaRepository repositorio;
 
+    @Autowired
+    private MobHostilRepository mobs;
+
     @Test
     void apiNoDisponibleResponde503YNoGuardaEnH2()
             throws Exception {
 
         long cantidadAntes = repositorio.count();
 
+        var creeper = mobs.save(new Creeper(new Vector3D(0, 0, 0)));
         String solicitud = """
                 {
-                    "creeperId": "11111111-1111-4111-8111-111111111111",
+                    "creeperId": "%s",
                     "objetivoId": "22222222-2222-4222-8222-222222222222"
                 }
-                """;
+                """.formatted(creeper.getId());
 
         mockMvc.perform(post("/api/minecraft/jugadas-cruzadas")
                 .contentType(MediaType.APPLICATION_JSON)
