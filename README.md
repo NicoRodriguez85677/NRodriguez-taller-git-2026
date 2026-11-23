@@ -63,9 +63,9 @@ de entorno indicadas arriba.
 
 | Servicio | Repositorio | Commit de referencia | Comando | Puerto |
 | --- | --- | --- | --- | --- |
-| A1 · Nicolás | [Repositorio](https://github.com/NicoRodriguez85677/NRodriguez-taller-git-2026) | [`7b31bd2`](https://github.com/NicoRodriguez85677/NRodriguez-taller-git-2026/commit/7b31bd2a787cdf715a338f3db82655035f9a2751) | `./mvnw spring-boot:run` | 8080 |
-| A2 · Amir | [Repositorio](https://github.com/AmirDujak/adb-taller-git-2026) | [`bd53941`](https://github.com/AmirDujak/adb-taller-git-2026/commit/bd5394196ea800c2aa751f00625944c513f4e486) | `./mvnw spring-boot:run` | 8080 |
-| A3 · Sofi | [Repositorio](https://github.com/Sofia-torres00/st-taller-git-2026) | [`e79b309`](https://github.com/Sofia-torres00/st-taller-git-2026/commit/e79b309ff49796e3ba00c5e1e72870d70c0ec28c) | `./mvnw spring-boot:run` | 8081 |
+| A1 · Nicolás | [Repositorio](https://github.com/NicoRodriguez85677/NRodriguez-taller-git-2026) | [`e9db16a`](https://github.com/NicoRodriguez85677/NRodriguez-taller-git-2026/commit/e9db16a93c925928734932e2759459a08747a1dd) | `./mvnw spring-boot:run` | 8080 |
+| A2 · Amir | [Repositorio](https://github.com/AmirDujak/adb-taller-git-2026) | [`e6be027`](https://github.com/AmirDujak/adb-taller-git-2026/commit/e6be0271ac31ed0b6e1bf3d631160c17b169687f) | `./mvnw spring-boot:run` | 8080 |
+| A3 · Sofi | [Repositorio](https://github.com/Sofia-torres00/st-taller-git-2026) | [`06a6fb2`](https://github.com/Sofia-torres00/st-taller-git-2026/commit/06a6fb297a5e9f9186d23b6dee7086fdaba94e30) | `./mvnw spring-boot:run` | 8081 |
 
 Cloná cada repositorio con `git clone <URL>`, entrá en su carpeta y seleccioná
 el hash de la tabla con `git switch --detach <hash>`. En Windows, usá
@@ -73,7 +73,7 @@ el hash de la tabla con `git switch --detach <hash>`. En Windows, usá
 un puerto libre a uno de ellos con `SERVER_PORT` y ajustá las bases de la
 colección y de A1.
 
-Los commits de Amir y Sofi corresponden a sus ramas `main` al consultarlas.
+La tabla enlaza el commit de arranque de A1 y los commits exactos que Amir y Sofi compartieron para la corrección.
 La evidencia por Tailscale se capturó contra las instancias activas. Si al
 arrancar Sofi con una H2 nueva el UUID del Zombie de ejemplo no existe, creá
 un Zombie con salud positiva mediante `POST /api/entidades` en el Swagger
