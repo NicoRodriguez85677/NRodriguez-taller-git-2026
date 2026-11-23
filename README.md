@@ -20,7 +20,6 @@ En Windows PowerShell: `.\mvnw.cmd spring-boot:run`.
 - API base: http://localhost:8080/api/minecraft
 
 El OpenAPI debe incluir el CRUD de mobs, la consulta de Explosivo y la simulacion de explosiones con sus codigos de error.
-
 **Reglas propias (A1):** detonacion de Creeper solo si su estado lo permite; dano por distancia dentro de un radio de cuatro bloques. La simulacion guardada permite demostrar ambas.
 
 **Mapa del grupo (pendiente de completar con los datos reales):**
@@ -50,7 +49,9 @@ De `Animal` derivan `Cerdo` y `Vaca`; de `Residente` deriva `Aldeano`, y de `Ald
 - `Inventario` agrega **0..*** objetos de tipo `Item`.
 - `Entidad` usa `Vector3D` para su posición y `TipoEntidad` para su tipo.
 - `Bloque` es una clase independiente que también usa `Vector3D`.
-- Asociaciones de uso: `Jugador.atacar(Entidad)`, `Jugador.colocarBloque(Bloque)`, `MobHostil.atacar/buscarObjetivo(Entidad)`, `Enderman.tomarBloque(Bloque)`, `Animal.alimentar(Item)`, `Residente.interactuar(Jugador)`, `Aldeano.comerciar(Jugador, Item)`.
+
+- Asociaciones de uso: `JugadorService` gestiona el ataque de `Jugador` contra `Entidad`; `Jugador.colocarBloque(Bloque)` conserva su operación; `MobHostil.atacar(Entidad)` mantiene el comportamiento polimórfico; `MobHostilService` gestiona la búsqueda de objetivos; `Enderman.tomarBloque(Bloque)`, `Animal.alimentar(Item)`, `Residente.interactuar(Jugador)` y `Aldeano.comerciar(Jugador, Item)` representan otras asociaciones del modelo.
+
 
 ### Comportamiento polimórfico `emitirSonido()`
 
@@ -136,7 +137,6 @@ classDiagram
         +esModoCreativo() boolean
         +setModoCreativo(modoCreativo boolean) void
         +aumentarExperiencia(cantidad int) void
-        +atacar(objetivo Entidad) void
         +recoger(item Item) boolean
         +colocarBloque(bloque Bloque) void
         +abrirInventario() Inventario
@@ -148,7 +148,6 @@ classDiagram
         -double alcanceVision
         +getFuerzaAtaque() double
         +getAlcanceVision() double
-        +buscarObjetivo(entidades List~Entidad~) Entidad
         +atacar(objetivo Entidad) void
     }
 
@@ -430,6 +429,18 @@ classDiagram
         +explotar() boolean
     }
     class Zombie
+
+    class Animal
+    class Vaca {
+        +emitirSonido() String
+    }
+    class Residente
+    class Aldeano {
+        +emitirSonido() String
+    }
+    class AldeanoArmero {
+        +emitirSonido() String
+    }
     class TNT {
         +encender() void
         +puedeExplotar() boolean
@@ -460,6 +471,11 @@ classDiagram
     SerVivo <|-- MobHostil
     MobHostil <|-- Creeper
     MobHostil <|-- Zombie
+    Entidad <|-- Animal
+    Animal <|-- Vaca
+    Entidad <|-- Residente
+    Residente <|-- Aldeano
+    Aldeano <|-- AldeanoArmero
     Atacante <|.. MobHostil
     Explosivo <|.. Creeper
     Explosivo <|.. TNT
@@ -634,10 +650,11 @@ El proyecto utiliza la licencia **Apache License 2.0**, incluida en el archivo `
 Texto oficial de referencia: https://www.apache.org/licenses/LICENSE-2.0.
 
 
-## Estado de correcciones (20/11/2026)
+## Estado de correcciones (22/11/2026)
 
-- Commit más reciente confirmado: `c1b271b`.
-- Pruebas completas: 26/26 aprobadas (`BUILD SUCCESS`).
+
+- Último commit confirmado antes de esta actualización: `95c9fe8` (verificación de Apache License 2.0).
+- Pruebas completas: 39/39 aprobadas (`BUILD SUCCESS`).
 - `Creeper` y `TNT` implementan `Explosivo`.
 - El endpoint de polimorfismo de explosivos fue comprobado mediante HTTP.
 - La simulación del Ghast está delegada a `MobHostilService`.
