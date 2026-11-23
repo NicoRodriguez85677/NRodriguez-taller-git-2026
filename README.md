@@ -18,7 +18,7 @@ en esta entrega es el siguiente.
 | --- | --- |
 | Paquetes de los controladores y del dominio | Cerrada. `IndexController` y `PolimorfismoController` declaran `rest.controller`. El modelo está en `py.edu.uc.lp3.domain`. |
 | Acceso directo a repositorios desde los controladores | Cerrada. El CRUD y la consulta de explosivos delegan en `MobHostilService`. |
-| Validaciones, reglas y excepciones en la capa de servicio | Parcial. `MobHostilService` valida datos del CRUD y `ExplosionService` valida la detonación y calcula el daño. `Entidad`, `SerVivo`, `MobHostil` y `Creeper` conservan validaciones propias que pueden lanzar excepciones. |
+| Validaciones, reglas y excepciones en la capa de servicio | Cerrada para los flujos de POO-08. `MobHostilService` valida la entrada del CRUD y `ExplosionService` valida la detonación y calcula el daño. Se retiraron las excepciones de validación de las entidades señaladas. Los controles internos de estado conservan el comportamiento de la consulta de explosivos y de la simulación. |
 | Dos implementaciones del protocolo y lectura mediante la interfaz | Cerrada. `Creeper` y `TNT` implementan `Explosivo`. El endpoint de consulta invoca `puedeExplotar()` a través de esa interfaz. |
 | Sobrecarga de constructores en otra clase | Cerrada. `Zombie` tiene un constructor con posición y otro con posición y velocidad. |
 | Clases ausentes del diagrama | Cerrada. El diagrama incluye a `Vaca` y `AldeanoArmero`. |

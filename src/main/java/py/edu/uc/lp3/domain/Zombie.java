@@ -18,11 +18,6 @@ public class Zombie extends MobHostil {
 	public Zombie(Vector3D posicion, double velocidad) {
     	super(TipoEntidad.ZOMBIE, "Zombie", 20, 3, 16, posicion);
 
-    	if (!Double.isFinite(velocidad) || velocidad <= 0) {
-        	throw new IllegalArgumentException(
-                	"La velocidad debe ser positiva y finita");
-    	}
-
     	this.velocidad = velocidad;
     	this.quemandose = false;
 	}

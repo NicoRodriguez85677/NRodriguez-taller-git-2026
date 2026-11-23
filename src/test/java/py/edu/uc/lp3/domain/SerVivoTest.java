@@ -1,6 +1,5 @@
 
 package py.edu.uc.lp3.domain;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
@@ -22,21 +21,17 @@ class SerVivoTest {
         assertEquals(20.0, zombie.getSalud());
     }
 
-@Test
-void rechazaRegeneracionInvalida() {
-    Zombie zombie = new Zombie(new Vector3D(0, 64, 0));
+    @Test
+    void regeneracionInvalidaConservaLaConfiguracion() {
+        Zombie zombie = new Zombie(new Vector3D(0, 64, 0));
+        zombie.recibirDano(5);
+        zombie.aplicarRegeneracion(1);
 
-    assertThrows(
-            IllegalArgumentException.class,
-            () -> zombie.aplicarRegeneracion(-1));
+        zombie.aplicarRegeneracion(-1);
+        zombie.aplicarRegeneracion(Double.NaN);
+        zombie.aplicarRegeneracion(Double.POSITIVE_INFINITY);
+        zombie.tick();
 
-    assertThrows(
-            IllegalArgumentException.class,
-            () -> zombie.aplicarRegeneracion(Double.NaN));
-
-    assertThrows(
-            IllegalArgumentException.class,
-            () -> zombie.aplicarRegeneracion(Double.POSITIVE_INFINITY));
-}
-
+        assertEquals(16.0, zombie.getSalud());
+    }
 }

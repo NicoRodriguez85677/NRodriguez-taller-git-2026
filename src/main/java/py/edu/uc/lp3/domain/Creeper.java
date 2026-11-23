@@ -21,10 +21,6 @@ public class Creeper extends MobHostil implements Explosivo{
 	public Creeper(Vector3D posicion, double tiempoDetonacion) {
 		super(TipoEntidad.CREEPER, "Creeper", 20, DANO_EXPLOSION, 4, posicion);
 
-		if (tiempoDetonacion <= 0) {
-			throw new IllegalArgumentException("El tiempo de detonación debe ser mayor que cero");
-		}
-
 		this.tiempoDetonacion = tiempoDetonacion;
 		this.detonando = false;
 		this.explotado = false;

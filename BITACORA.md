@@ -121,3 +121,11 @@ OpenAPI 3.1 en el pedido de A1. El asistente consultó en GitHub los commits
 de referencia y las instrucciones de arranque de Amir y Sofi y actualizó
 el README. Comparó la corrección de POO-08 con el código actual y dejó
 registradas las observaciones cerradas y la que sigue parcial.
+
+### Cierre de la observación de POO-08
+
+Se retiraron las excepciones de validación de las entidades señaladas por
+la corrección. El CRUD y la simulación conservan las validaciones de entrada
+en sus servicios. Se verificó el contrato HTTP de la consulta de explosivos
+que usa Sofi y el error del CRUD para el tiempo de detonación inválido.
+La suite de Maven pasó 65 pruebas con H2 en memoria, incluidas las de POO-09.

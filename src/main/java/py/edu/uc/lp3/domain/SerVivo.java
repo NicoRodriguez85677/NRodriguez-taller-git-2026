@@ -20,16 +20,6 @@ public abstract class SerVivo extends Entidad {
                       Vector3D posicion) {
         super(tipo, nombre, salud, posicion);
 
-        if (!Double.isFinite(saludMaxima) || saludMaxima <= 0) {
-            throw new IllegalArgumentException(
-                    "La salud maxima debe ser positiva y finita");
-        }
-
-        if (salud > saludMaxima) {
-            throw new IllegalArgumentException(
-                    "La salud no puede superar la salud maxima");
-        }
-
         this.saludMaxima = saludMaxima;
         this.envenenado = false;
         this.regeneracion = 0;
@@ -52,21 +42,16 @@ public abstract class SerVivo extends Entidad {
     }
 
     public void aplicarRegeneracion(double cantidadPorTick) {
-        if (!Double.isFinite(cantidadPorTick) || cantidadPorTick < 0) {
-            throw new IllegalArgumentException(
-                    "La regeneracion debe ser finita y no negativa");
+        if (Double.isFinite(cantidadPorTick) && cantidadPorTick >= 0) {
+            this.regeneracion = cantidadPorTick;
         }
-        this.regeneracion = cantidadPorTick;
     }
 
     @Override
     public void curar(double cantidad) {
-        if (!Double.isFinite(cantidad) || cantidad <= 0) {
-            throw new IllegalArgumentException(
-                    "La curacion debe ser positiva y finita");
+        if (Double.isFinite(cantidad) && cantidad > 0) {
+            cambiarSalud(Math.min(getSalud() + cantidad, saludMaxima));
         }
-
-        cambiarSalud(Math.min(getSalud() + cantidad, saludMaxima));
     }
 
     @Override
