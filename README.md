@@ -9,6 +9,21 @@ Si Amir acepta, consulta a Sofi (A3) con `GET /api/entidades/{objetivoId}` y
 comprueba que la entidad sea un `ZOMBIE` con `salud > 0`. Un `404` de Sofi
 cuenta como rechazo de A3. Las dos consultas son de lectura.
 
+### Estado de la corrección de POO-08
+
+La corrección de POO-08 registró 19,5/24. El estado de sus observaciones
+en esta entrega es el siguiente.
+
+| Observación | Estado |
+| --- | --- |
+| Paquetes de los controladores y del dominio | Cerrada. `IndexController` y `PolimorfismoController` declaran `rest.controller`. El modelo está en `py.edu.uc.lp3.domain`. |
+| Acceso directo a repositorios desde los controladores | Cerrada. El CRUD y la consulta de explosivos delegan en `MobHostilService`. |
+| Validaciones, reglas y excepciones en la capa de servicio | Parcial. `MobHostilService` valida datos del CRUD y `ExplosionService` valida la detonación y calcula el daño. `Entidad`, `SerVivo`, `MobHostil` y `Creeper` conservan validaciones propias que pueden lanzar excepciones. |
+| Dos implementaciones del protocolo y lectura mediante la interfaz | Cerrada. `Creeper` y `TNT` implementan `Explosivo`. El endpoint de consulta invoca `puedeExplotar()` a través de esa interfaz. |
+| Sobrecarga de constructores en otra clase | Cerrada. `Zombie` tiene un constructor con posición y otro con posición y velocidad. |
+| Clases ausentes del diagrama | Cerrada. El diagrama incluye a `Vaca` y `AldeanoArmero`. |
+
+
 ### Configuración y OpenAPI
 
 En la terminal PowerShell desde la que se vaya a iniciar A1, con Tailscale conectado:
@@ -40,11 +55,31 @@ hace falta consultar a Sofi. En Sofi, `GET /api/entidades/{id}` aporta el tipo
 y la salud de la entidad registrada. A1 acepta ese objetivo solo si existe,
 es Zombie y tiene salud positiva.
 
-Arrancá primero los servicios de Amir (puerto 8080) y Sofi (puerto 8081) en
-sus equipos y comprobá sus OpenAPI. Después arrancá Nicolás con el comando
-y las variables de arriba. Quedan por confirmar los enlaces a los commits
-de los compañeros y sus comandos exactos para reproducir el grupo desde
-clones. La prueba por Tailscale usó los servicios que ya estaban en ejecución.
+### Arranque desde los commits del grupo
+
+Usá JDK 21 y ejecutá cada servicio desde la raíz de su clon. Arrancá Amir
+y Sofi primero, comprobá sus OpenAPI y después arrancá A1 con las variables
+de entorno indicadas arriba.
+
+| Servicio | Repositorio | Commit de referencia | Comando | Puerto |
+| --- | --- | --- | --- | --- |
+| A1 · Nicolás | [Repositorio](https://github.com/NicoRodriguez85677/NRodriguez-taller-git-2026) | [`7b31bd2`](https://github.com/NicoRodriguez85677/NRodriguez-taller-git-2026/commit/7b31bd2a787cdf715a338f3db82655035f9a2751) | `./mvnw spring-boot:run` | 8080 |
+| A2 · Amir | [Repositorio](https://github.com/AmirDujak/adb-taller-git-2026) | [`bd53941`](https://github.com/AmirDujak/adb-taller-git-2026/commit/bd5394196ea800c2aa751f00625944c513f4e486) | `./mvnw spring-boot:run` | 8080 |
+| A3 · Sofi | [Repositorio](https://github.com/Sofia-torres00/st-taller-git-2026) | [`e79b309`](https://github.com/Sofia-torres00/st-taller-git-2026/commit/e79b309ff49796e3ba00c5e1e72870d70c0ec28c) | `./mvnw spring-boot:run` | 8081 |
+
+Cloná cada repositorio con `git clone <URL>`, entrá en su carpeta y seleccioná
+el hash de la tabla con `git switch --detach <hash>`. En Windows, usá
+`.\mvnw.cmd spring-boot:run`. Si A1 y A2 corren en la misma máquina, asigná
+un puerto libre a uno de ellos con `SERVER_PORT` y ajustá las bases de la
+colección y de A1.
+
+Los commits de Amir y Sofi corresponden a sus ramas `main` al consultarlas.
+La evidencia por Tailscale se capturó contra las instancias activas. Si al
+arrancar Sofi con una H2 nueva el UUID del Zombie de ejemplo no existe, creá
+un Zombie con salud positiva mediante `POST /api/entidades` en el Swagger
+de Sofi y poné el UUID devuelto en `zombieVivoSofiId` de la colección. Hacé
+esa creación en una instancia de prueba de Sofi. Amir usa un Zombie temporal
+para este escenario.
 
 
 ### Demostración

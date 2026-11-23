@@ -113,3 +113,11 @@ del Zombie vivo. La prueba confirmó también el UUID ausente en Sofi.
 **Alcance:** la revisión de POO-08 se omitió por indicación del estudiante.
 Quedan pendientes las referencias de Git de los compañeros, la comprobación
 de sus comandos de arranque desde clones y el enlace final de entrega.
+
+### Verificación y documentación de entrega (23/11/2026)
+
+Nicolás importó la colección en Insomnia 13.4.0 y obtuvo HTTP 200 con
+OpenAPI 3.1 en el pedido de A1. El asistente consultó en GitHub los commits
+de referencia y las instrucciones de arranque de Amir y Sofi y actualizó
+el README. Comparó la corrección de POO-08 con el código actual y dejó
+registradas las observaciones cerradas y la que sigue parcial.
