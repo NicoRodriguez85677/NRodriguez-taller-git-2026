@@ -4,9 +4,11 @@ package py.edu.uc.lp3.service;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
 import py.edu.uc.lp3.domain.JugadaCruzada;
 import py.edu.uc.lp3.repository.JugadaCruzadaRepository;
 
+@Service
 public class JugadaCruzadaService {
 
     public record Decision(
