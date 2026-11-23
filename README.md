@@ -628,7 +628,11 @@ La simulación se guardó en H2 y posteriormente se recuperó mediante GET. Un s
 
 ## Licencia
 
-El proyecto se documenta con la licencia **Apache License 2.0**. Se confirmó que existe un archivo `LICENSE` en la raíz del repositorio mediante `Test-Path .\LICENSE` (resultado: `True`). Queda pendiente verificar que el contenido del archivo corresponda efectivamente a Apache 2.0. Texto oficial de referencia: https://www.apache.org/licenses/LICENSE-2.0.
+
+El proyecto utiliza la licencia **Apache License 2.0**, incluida en el archivo `LICENSE` de la raíz del repositorio. Se verificaron su encabezado, las secciones finales, el cierre de términos y el apéndice.
+
+Texto oficial de referencia: https://www.apache.org/licenses/LICENSE-2.0.
+
 
 ## Estado de correcciones (20/11/2026)
 
@@ -638,7 +642,9 @@ El proyecto se documenta con la licencia **Apache License 2.0**. Se confirmó qu
 - El endpoint de polimorfismo de explosivos fue comprobado mediante HTTP.
 - La simulación del Ghast está delegada a `MobHostilService`.
 - Confirmado en código: `Vaca extends Animal`, `AldeanoArmero extends Aldeano`, y sus métodos `emitirSonido()`.
-- Confirmado: existe `LICENSE` en la raíz. Pendiente: comprobar su contenido para verificar Apache 2.0.
+
+- [x] Verificar la existencia y las secciones principales del archivo `LICENSE` (Apache License 2.0).
+
 
 ## Enlace al commit de POO-08
 
