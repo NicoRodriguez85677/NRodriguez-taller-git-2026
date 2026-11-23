@@ -3,7 +3,7 @@ package py.edu.uc.lp3.service;
 
 import java.util.List;
 import java.util.UUID;
-
+import py.edu.uc.lp3.exception.AccionIlegalException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -169,6 +169,17 @@ public record ResultadoAtaqueGhast(
         String objetivo,
         double saludObjetivo,
         int ticksEnfriamiento) {
+}
+
+public Explosivo obtenerExplosivo(UUID id) {
+    MobHostil mob = buscar(id);
+
+    if (!(mob instanceof Explosivo explosivo)) {
+        throw new AccionIlegalException(
+                "El mob no implementa la interface Explosivo");
+    }
+
+    return explosivo;
 }
 
 }

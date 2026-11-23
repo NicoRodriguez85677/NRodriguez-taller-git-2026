@@ -10,9 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import org.springframework.web.bind.annotation.*;
 
-import py.edu.uc.lp3.exception.AccionIlegalException;
 import py.edu.uc.lp3.domain.Explosivo;
-import py.edu.uc.lp3.domain.MobHostil;
 import py.edu.uc.lp3.service.MobHostilService;
 
 @RestController
@@ -39,18 +37,14 @@ public class ExplosivoController {
     @GetMapping("/{id}")
     public ExplosivoRespuesta consultar(@PathVariable UUID id) {
 
-        MobHostil mob = service.obtener(id);
-
-        if (!(mob instanceof Explosivo explosivo)) {
-            throw new AccionIlegalException(
-                    "El mob no implementa la interface Explosivo");
-        }
+        Explosivo explosivo = service.obtenerExplosivo(id);
 
         return new ExplosivoRespuesta(
-                mob.getId(),
-                mob.getClass().getSimpleName(),
+                id,
+                explosivo.getClass().getSimpleName(),
                 Explosivo.class.getSimpleName(),
                 explosivo.puedeExplotar());
-    }
+        }
+
 }
 
