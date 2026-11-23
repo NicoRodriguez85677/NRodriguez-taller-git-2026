@@ -182,4 +182,40 @@ public Explosivo obtenerExplosivo(UUID id) {
     return explosivo;
 }
 
+public ResultadoAcercamiento simularAcercamientoCreeper(
+        double distanciaMaxima) {
+
+    if (!Double.isFinite(distanciaMaxima)
+            || distanciaMaxima < 0) {
+        throw new IllegalArgumentException(
+                "La distancia maxima debe ser finita y no negativa");
+    }
+
+    Creeper sinLimite = new Creeper(
+            new Vector3D(0, 64, 0));
+
+    Creeper conLimite = new Creeper(
+            new Vector3D(0, 64, 0));
+
+    Zombie objetivo = new Zombie(
+            new Vector3D(3, 64, 0));
+
+    // Primera sobrecarga
+    sinLimite.acercarse(objetivo);
+
+    // Segunda sobrecarga
+    conLimite.acercarse(objetivo, distanciaMaxima);
+
+    return new ResultadoAcercamiento(
+            sinLimite.getPosicion(),
+            conLimite.getPosicion(),
+            distanciaMaxima);
+}
+
+public record ResultadoAcercamiento(
+        Vector3D posicionSinLimite,
+        Vector3D posicionConLimite,
+        double distanciaMaxima) {
+}
+
 }
