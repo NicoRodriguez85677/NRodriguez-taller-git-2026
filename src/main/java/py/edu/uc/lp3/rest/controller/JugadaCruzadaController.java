@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.List;
+import py.edu.uc.lp3.domain.JugadaCruzada;
+
 import py.edu.uc.lp3.service.JugadaCruzadaService;
 import py.edu.uc.lp3.service.JugadaCruzadaService.Resultado;
 
@@ -72,4 +75,18 @@ public class JugadaCruzadaController {
                 .status(HttpStatus.CREATED)
                 .body(resultado);
     }
+
+    @Operation(
+        summary = "Listar jugadas cruzadas",
+        description = "Recupera las jugadas aprobadas y persistidas en H2."
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "Lista de jugadas guardadas"
+    )
+    @GetMapping
+    public List<JugadaCruzada> listar() {
+        return service.listar();
+    }
+
 }

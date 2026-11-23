@@ -22,6 +22,12 @@ import py.edu.uc.lp3.repository.JugadaCruzadaRepository;
 import py.edu.uc.lp3.service.JugadaCruzadaService.Decision;
 import py.edu.uc.lp3.service.JugadaCruzadaService.ValidadorExterno;
 
+
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import py.edu.uc.lp3.domain.JugadaCruzada;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -147,6 +153,23 @@ void errorConexionA3Devuelve503YNoGuarda() throws Exception {
             .andExpect(status().isServiceUnavailable());
 
     assertThat(repositorio.count()).isEqualTo(antes);
+}
+
+@Test
+void listarDevuelveJugadaGuardadaEnH2() throws Exception {
+
+    UUID creeperId = UUID.randomUUID();
+    UUID objetivoId = UUID.randomUUID();
+
+    JugadaCruzada jugada = repositorio.saveAndFlush(
+            new JugadaCruzada(creeperId, objetivoId));
+
+    mockMvc.perform(get("/api/minecraft/jugadas-cruzadas"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[*].id",
+                    hasItem(jugada.getId().toString())))
+            .andExpect(jsonPath("$[*].creeperId",
+                    hasItem(creeperId.toString())));
 }
 
 }

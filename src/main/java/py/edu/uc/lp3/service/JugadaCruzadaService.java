@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import py.edu.uc.lp3.domain.JugadaCruzada;
 import py.edu.uc.lp3.repository.JugadaCruzadaRepository;
 
+import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.server.ResponseStatusException;
@@ -97,4 +100,10 @@ public class JugadaCruzadaService {
         return new Resultado(
                 true, null, null, guardada);
     }
+
+@Transactional(readOnly = true)
+public List<JugadaCruzada> listar() {
+    return jugadas.findAll();
+}
+
 }
