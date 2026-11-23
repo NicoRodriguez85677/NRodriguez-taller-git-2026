@@ -31,11 +31,13 @@ public class ExplosivoController {
             boolean puedeExplotar) {
     }
 
-    @Operation(summary = "Consultar si un mob puede explotar", description = "Consulta la regla de estado de Explosivo sin detonarlo ni cambiar la base H2.")
-    @ApiResponse(responseCode = "404", description = "Mob inexistente")
-    @ApiResponse(responseCode = "409", description = "El mob no implementa Explosivo")
-    @GetMapping("/{id}")
-    public ExplosivoRespuesta consultar(@PathVariable UUID id) {
+
+        @Operation(summary = "Consultar si un mob puede explotar", description = "Consulta la regla de estado de Explosivo sin detonarlo ni cambiar la base H2.")
+        @ApiResponse(responseCode = "200", description = "Estado del explosivo consultado correctamente")
+        @ApiResponse(responseCode = "404", description = "Mob inexistente")
+        @ApiResponse(responseCode = "409", description = "El mob no implementa Explosivo")
+        @GetMapping("/{id}")
+        public ExplosivoRespuesta consultar(@PathVariable UUID id) {
 
         Explosivo explosivo = service.obtenerExplosivo(id);
 

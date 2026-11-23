@@ -87,14 +87,17 @@ public class MobHostilController {
                 .toList();
     }
 
+
     @Operation(summary = "Consultar mob por UUID")
+    @ApiResponse(responseCode = "200", description = "Mob encontrado")
     @ApiResponse(responseCode = "404", description = "UUID inexistente")
     @GetMapping("/{id}")
+
     public MobRespuesta obtener(@PathVariable UUID id) {
         return respuesta(service.obtener(id));
     }
-
     @Operation(summary = "Actualizar posicion y salud", description = "Es obligatorio enviar x, y, z y salud; no reemplaza el subtipo.")
+    @ApiResponse(responseCode = "200", description = "Mob actualizado correctamente")
     @ApiResponse(responseCode = "400", description = "Valores invalidos")
     @ApiResponse(responseCode = "404", description = "UUID inexistente")
     @PutMapping("/{id}")
