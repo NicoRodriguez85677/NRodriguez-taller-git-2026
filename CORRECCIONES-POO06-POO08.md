@@ -1,569 +1,382 @@
-
 # Seguimiento de correcciones POO-06 y POO-08
+
+**Repositorio:** `NicoRodriguez85677/NRodriguez-taller-git-2026`
+**Rama de trabajo actual:** `feat/poo09-openapi-2026`
+**Última actualización del seguimiento:** 22/11/2026 (trabajo continuado durante la noche)
+
+**Última verificación reportada por el estudiante:** 36 pruebas aprobadas, `BUILD SUCCESS`.
+
+> **Criterio de registro:** `[x]` significa implementado y comprobado en el trabajo realizado; `[ ]` significa pendiente o no verificado. Los resultados locales se registran según las salidas y capturas compartidas por el estudiante. Los últimos commits locales todavía no se subieron a GitHub.
 
 ## Referencias
 
-- Corrección POO-06 - Nicolás Rodríguez.pdf
-- Corrección POO-08 - Nicolás Rodríguez.pdf
+- `Corrección POO-06 - Nicolás Rodríguez.pdf`.
+- `Corrección POO-08 - Nicolás Rodríguez.pdf`.
+- Enunciado: [POO-09 — APIs cruzadas](https://github.com/alefq/afq-taller-git-2024/blob/main/docs/ejercicio-poo-09-apis-cruzadas-2026-11-16.md).
 
 ## Objetivo
 
-Corregir las observaciones del profesor correspondientes a POO-06 y POO-08 antes de continuar con POO-09.
+Corregir las observaciones del profesor de POO-06 y POO-08, mantener el proyecto Minecraft funcional y preparar la integración de POO-09. Antes de cambiar código, comprobar si la funcionalidad ya existe; hacer cambios pequeños y ejecutar pruebas.
 
-Trabajar paso a paso, verificar cada cambio y evitar repetir revisiones o modificaciones ya realizadas.
+**Importante:** POO-09 reserva **3 puntos** para cerrar *todas* las observaciones de POO-08 cuando la corrección tuvo descuentos. Tener 36 pruebas aprobadas no demuestra, por sí solo, que todas las observaciones de arquitectura estén cerradas.
 
 ---
 
 ## 1. Correcciones realizadas y verificadas
 
-### 1.1. Organización del dominio
+### 1.1. Organización del dominio y paquetes
 
-- [x] Reorganizar las clases del dominio en `py.edu.uc.lp3.domain`.
-  - Se trasladaron las clases al paquete correspondiente.
-  - Se actualizaron las referencias e imports.
-  - Las pruebas Maven aprobaron.
-  - Commit: `62c8b25`.
+- [x] Mover las clases del dominio a `py.edu.uc.lp3.domain` y actualizar imports. Commit `62c8b25`.
+- [x] Corregir las declaraciones de paquete de `IndexController` y `PolimorfismoController` a `py.edu.uc.lp3.rest.controller`.
+- [x] Separar `domain`, `rest/controller`, `service`, `repository` y `exception`.
+- [x] Confirmar que los controllers de CRUD no accedan directamente a repositorios.
 
-### 1.2. Separación entre controllers y servicios
+### 1.2. Controllers y servicios
 
-- [x] Delegar las operaciones CRUD de `MobHostilController` a `MobHostilService`.
-  - Se eliminó el acceso directo al repositorio desde el controller.
-  - Commit: `f4e0777`.
+- [x] Delegar CRUD de `MobHostilController` a `MobHostilService`. Commit `f4e0777`.
+- [x] Delegar búsqueda de mobs de `ExplosivoController` a `MobHostilService`. Commit `f4e0777`.
+- [x] Trasladar a `MobHostilService.obtenerExplosivo(UUID)` la comprobación del tipo `Explosivo`, evitando que el controller decida la validez de la acción. Commit local `1230a98`.
+- [x] Verificar mediante `ExplosivoControllerTest` que consultar un Zombie como explosivo responde **HTTP 409**, `ACCION_ILEGAL`, con el mensaje esperado. Prueba incluida en las 33 y posteriores 36 pruebas satisfactorias.
+- [x] Crear `JugadorService`, validar nombre y coordenadas antes de construir `Jugador` y hacer que `IndexController` lo utilice. Commit local `efb6f50`.
+- [x] Eliminar `MobHostil.buscarObjetivo()` duplicado; conservar la búsqueda en `MobHostilService`. Commit local `efb6f50`.
+- [x] Comprobar la búsqueda de objetivos mediante pruebas de `MobHostilServiceTest`.
 
-- [x] Reemplazar el acceso directo al repositorio en `ExplosivoController`.
-  - El controller utiliza `MobHostilService` para obtener los mobs.
-  - Commit: `f4e0777`.
+### 1.3. Interfaces, herencia y polimorfismo
 
-- [x] Verificar que los controllers no accedan directamente a repositorios.
+- [x] Confirmar que `MobHostil` implementa `Atacante`; `Creeper` y `Zombie` lo heredan.
+- [x] Demostrar `List<Atacante>`, `getFuerzaAtaque()` y `tipoAtaque()` mediante `GET /api/minecraft/polimorfismo/tipos-ataque` (verificación HTTP del 20/11/2026).
+- [x] Confirmar, conforme al PDF de POO-08, que la interfaz debía tener al menos dos implementaciones.
+- [x] Implementar `TNT` como segunda implementación de `Explosivo`, además de `Creeper`. Commit `c1b271b`.
+- [x] Exponer demostración polimórfica de ambas implementaciones mediante `GET /api/minecraft/polimorfismo/explosivos`.
+- [x] Agregar pruebas de `Explosivo` y comprobar que TNT no explota apagada ni vuelve a explotar después de usarse.
 
-### 1.3. Paquetes de los controllers
+### 1.4. Sobrecarga y comportamiento HTTP
 
-- [x] Verificar `IndexController`.
-  - Paquete: `py.edu.uc.lp3.rest.controller`.
+- [x] Verificar `Creeper(Vector3D)` y `Creeper(Vector3D, double tiempoDetonacion)`.
+- [x] Verificar `Zombie(Vector3D)` y `Zombie(Vector3D, double velocidad)`; el primero delega al segundo.
+- [x] Confirmar que el POST de Creeper admite tiempo de detonación opcional y selecciona el constructor correspondiente.
+- [x] Revisar las dos firmas `acercarse(Entidad)` y `acercarse(Entidad, double)`.
+- [x] Implementar `MobHostilService.simularAcercamientoCreeper(double)` y `AcercamientoController` para hacer la sobrecarga observable por HTTP.
+- [x] Probar `GET /api/minecraft/creeper/acercamiento?distanciaMaxima=2`: sin límite `(3,64,0)`; con límite `(0,64,0)`.
+- [x] Probar `GET /api/minecraft/creeper/acercamiento?distanciaMaxima=4`: ambos `(3,64,0)`.
+- [x] Agregar `AcercamientoControllerTest` con los dos casos; suite completa de **36 pruebas** aprobada.
+- [ ] Revisar si es necesario hacer observable también por HTTP la sobrecarga de **Zombie**; existe en Java, pero no está expuesta explícitamente como opción de creación.
+- [ ] Confirmar con una prueba específica que el JSON de creación de Creeper evidencia de manera suficiente cuál constructor se usó; el DTO actual no devuelve el tiempo de detonación.
 
-- [x] Verificar `PolimorfismoController`.
-  - Paquete: `py.edu.uc.lp3.rest.controller`.
+### 1.5. Errores HTTP y validación de jugador
 
-### 1.4. Interfaz compartida y polimorfismo
+- [x] Confirmar `HTTP 400` y `ARGUMENTO_INVALIDO` ante nombre vacío en `GET /api/minecraft/jugador` (comprobado el 20/11/2026).
+- [x] Conservar los handlers de `IllegalArgumentException` (400), `MobNoEncontradoException` (404) y `AccionIlegalException` (409).
+- [x] Agregar `JugadorServiceTest` con creación válida y rechazo de nombre y coordenadas inválidos. Commit local `e213d17`.
+- [x] Retirar la comprobación de nombre del constructor base `Entidad` para el caso de creación de jugador, conservando las comprobaciones existentes en `Jugador` y `JugadorService`. Commit local `60c8f88`.
+- [x] Agregar prueba que comprueba el rechazo de nombres vacíos y nulos al construir directamente un `Jugador`. Commit local `60c8f88`.
+- [ ] Evaluar si otras subclases futuras podrían recibir nombres externos y requerir validación específica en su servicio; no generalizar el cambio sin revisar invariantes.
 
-- [x] Verificar el uso de una interfaz compartida.
-  - Interfaz: `Atacante`.
-  - `MobHostil` implementa `Atacante`.
-  - `Creeper` y `Zombie` implementan indirectamente `Atacante` por herencia.
+### 1.6. Diagramas y licencia
 
-- [x] Verificar el polimorfismo mediante HTTP.
-  - Controller: `PolimorfismoController`.
-  - Utiliza `List<Atacante>`.
-  - Invoca `getFuerzaAtaque()` y `tipoAtaque()` mediante la interfaz.
-  - Endpoint: `GET /api/minecraft/polimorfismo/tipos-ataque`.
-  - Prueba HTTP exitosa el 20/11/2026.
-  - Creeper: fuerza 17.0, tipo Explosion.
-  - Zombie: fuerza 3.0, tipo Golpe cuerpo a cuerpo.
-
-- [ ] Confirmar si la observación del profesor requiere específicamente una segunda implementación de `Explosivo`.
-  - Actualmente se demostró polimorfismo mediante `Atacante`.
-  - No dar por resuelta automáticamente la observación específica sobre `Explosivo`.
-
-### 1.5. Sobrecarga de constructores
-
-- [x] Verificar la sobrecarga de constructores en `Zombie`.
-  - `Zombie(Vector3D posicion)`.
-  - `Zombie(Vector3D posicion, double velocidad)`.
-  - El primero delega mediante `this(posicion, 1.0)`.
-  - Se conserva el constructor protegido requerido por JPA.
-  - No fue necesario modificar `Zombie.java`.
-
-- [x] Verificar los constructores sobrecargados de `Creeper`.
-  - Constructor con posición.
-  - Constructor con posición y tiempo de detonación.
-
-- [ ] Verificar que las sobrecargas sean observables mediante HTTP.
-  - Revisar la demostración de los constructores de `Creeper`.
-  - Revisar la sobrecarga de `acercarse()`.
-  - Agregar o adaptar un endpoint solamente si es necesario.
-
-### 1.6. Manejo de parámetros inválidos
-
-- [x] Verificar HTTP 400 para nombres inválidos.
-  - Controller: `IndexController`.
-  - Endpoint: `GET /api/minecraft/jugador?nombre=%20&x=0&y=64&z=0`.
-  - Resultado: HTTP 400.
-  - Error: `ARGUMENTO_INVALIDO`.
-  - Mensaje: `El nombre no puede estar vacio`.
-  - Respuesta JSON comprobada en navegador el 20/11/2026.
-  - No fue necesario modificar el controller ni el manejador de excepciones.
+- [x] Actualizar el diagrama general con `Vaca` y `AldeanoArmero` y sus relaciones de herencia. Commit `7d54bbd`.
+- [x] Reflejar `Explosivo`, `Atacante`, `Creeper`, `TNT` y las relaciones relevantes en los diagramas.
+- [x] Actualizar el texto sobre `emitirSonido()` y sus sobreescrituras.
+- [x] Verificar el archivo `LICENSE`: contiene **Apache License, Version 2.0**.
+- [x] Mencionar la licencia Apache 2.0 en el README.
+- [ ] Ajustar la nota antigua del README que todavía dice que verificar el contenido de `LICENSE` está pendiente.
+- [ ] Incorporar al README el nuevo endpoint de acercamiento y las correcciones recientes.
 
 ---
 
-## 2. Pruebas unitarias de ExplosionService
+## 2. Pruebas unitarias de `ExplosionService`
 
 ### 2.1. Pruebas iniciales
 
-- [x] Crear el paquete `py.edu.uc.lp3.service` para pruebas.
-
-- [x] Crear `ExplosionServiceTest.java`.
-  - Ruta: `src/test/java/py/edu/uc/lp3/service/ExplosionServiceTest.java`.
-
-- [x] Implementar seis pruebas iniciales:
-  1. Explosión exitosa con daño al objetivo.
-  2. Objetivo fuera del radio de explosión.
-  3. Rechazo de identificadores nulos.
-  4. Rechazo de un Zombie como origen.
-  5. Rechazo de un mob inexistente.
-  6. Rechazo de un Creeper que intenta atacarse a sí mismo.
-
-- [x] Ejecutar las seis pruebas.
-  - Comando: `.\mvnw.cmd -Dtest=ExplosionServiceTest test`.
-  - Resultado: 6 pruebas aprobadas.
-  - Fallos: 0.
-  - Errores: 0.
-  - BUILD SUCCESS.
-
-- [x] Guardar las pruebas en Git.
-  - Commit: `99acb46`.
-  - Mensaje: `test: agregar pruebas unitarias de ExplosionService`.
+- [x] Crear `src/test/java/py/edu/uc/lp3/service/ExplosionServiceTest.java`.
+- [x] Probar explosión válida y daño al objetivo.
+- [x] Probar objetivo fuera del radio de explosión.
+- [x] Rechazar UUID nulos.
+- [x] Rechazar un Zombie como origen.
+- [x] Rechazar un mob inexistente.
+- [x] Rechazar un Creeper como su propio objetivo.
+- [x] Verificar **6 pruebas aprobadas** en la primera etapa. Commit `99acb46`.
 
 ### 2.2. Pruebas adicionales
 
-- [x] Agregar pruebas para condiciones de explosión.
-  - Creeper muerto.
-  - Creeper que ya está detonando.
-  - Objetivo muerto.
-  - Creeper que ya explotó.
+- [x] Rechazar Creeper muerto.
+- [x] Rechazar Creeper que ya está detonando.
+- [x] Rechazar objetivo muerto.
+- [x] Rechazar Creeper que ya explotó.
+- [x] Priorizar la verificación de `yaExploto()` para conservar el mensaje `El Creeper ya exploto`.
+- [x] Verificar que las operaciones rechazadas no llamen a `save()` en los repositorios simulados.
+- [x] Confirmar **10 pruebas aprobadas** de `ExplosionServiceTest` (20/11/2026).
 
-- [x] Verificar el rechazo de operaciones inválidas.
-  - No deben guardarse cambios cuando se rechaza la explosión.
-  - Se comprueba el comportamiento mediante repositorios simulados.
-
-- [x] Corregir el orden de validación para el Creeper que ya explotó.
-  - Inicialmente una prueba falló porque devolvía:
-    `Los mobs deben estar vivos`.
-  - El mensaje esperado era:
-    `El Creeper ya exploto`.
-  - Se corrigió el orden de las condiciones.
-  - La prueba volvió a aprobar.
-
-- [x] Ejecutar las diez pruebas de `ExplosionService`.
-  - Resultado: 10 pruebas aprobadas.
-  - Fallos: 0.
-  - Errores: 0.
-  - BUILD SUCCESS.
-
-**Importante:** estas pruebas utilizan Mockito para simular los repositorios. No sustituyen una prueba de integración real con H2.
+**Límite:** las pruebas anteriores usan Mockito; no sustituyen pruebas de integración con H2. Los tests HTTP posteriores sí ejercitan el contexto de Spring y el endpoint indicado.
 
 ---
 
 ## 3. Refactorización de las reglas de explosión
 
-### 3.1. Cálculo del daño
+### 3.1. Cálculo del daño — completado
 
-- [x] Trasladar el cálculo del daño desde `Creeper` a `ExplosionService`.
+- [x] Trasladar el cálculo desde `Creeper.calcularDanoExplosion()` a `ExplosionService`.
+- [x] Eliminar el cálculo duplicado en `Creeper`.
+- [x] Conservar fuerza del Creeper **17** y radio máximo **4 bloques**.
+- [x] Mantener daño cero fuera del radio y decrecimiento proporcional dentro.
+- [x] Ejecutar pruebas tras el cambio. Commit `286ac22`.
 
-Anteriormente se utilizaba:
-
-`creeper.calcularDanoExplosion(objetivo)`
-
-Ahora el cálculo se realiza directamente en el servicio:
+Fórmula en el servicio:
 
 ```java
 double radio = 4.0;
 double fuerzaAtaque = creeper.getFuerzaAtaque();
-
 double dano = distancia > radio
         ? 0
         : Math.max(0, fuerzaAtaque * (1 - distancia / radio));
 ```
 
-- [x] Conservar el comportamiento original.
-  - Fuerza de ataque del Creeper: 17.
-  - Radio de explosión: 4 bloques.
-  - El daño disminuye proporcionalmente con la distancia.
-  - Fuera del radio, el daño es cero.
+### 3.2. Validaciones de explosión — implementadas en el servicio
 
-- [x] Eliminar el método duplicado `calcularDanoExplosion()` de `Creeper.java`.
+- [x] Validar UUID y existencia de origen y objetivo.
+- [x] Rechazar origen distinto de Creeper o que coincide con el objetivo.
+- [x] Validar explícitamente Creeper ya explotado, mobs muertos y Creeper detonando.
+- [x] Mantener el mensaje específico de explosión repetida.
+- [x] Verificar las validaciones mediante pruebas de `ExplosionService`.
+- [x] Reordenar **solo la indentación** del bloque de validaciones y el cálculo; comprobado mediante `git diff -w --ignore-blank-lines --exit-code`. Cambio guardado en el commit local `4a9b7c2` (`style: ordenar validaciones de ExplosionService`).
 
-- [x] Verificar que las pruebas sigan aprobando después del traslado.
+### 3.3. Comportamiento de `Creeper` que debe conservarse
 
-### 3.2. Validaciones de explosión
+- `ExplosionService` llama a `comenzarDetonacion()` y `explotar()`.
+- `Creeper` implementa `Explosivo` mediante `puedeExplotar()` y `explotar()`.
+- `Creeper.tick()` llama a `explotar()` al cumplirse el tiempo de detonación.
+- [x] Agregar la prueba `creeperExplotaDespuesDeTresTicks()`: explota al tercer tick, queda muerto y no repite explosión. Commit local `7b979cd`.
+- [x] Confirmar **34 pruebas completas aprobadas** tras agregar la prueba anterior.
+- [ ] Revisar definitivamente con la observación del profesor qué reglas deben residir en el servicio y qué operaciones de estado/polimorfismo deben permanecer en la entidad.
+- [ ] Resolver sin romper la interfaz `Explosivo` ni la detonación mediante `tick()` la separación de responsabilidades pendiente.
+- [ ] Repetir las pruebas tras cualquier modificación adicional de `Creeper` o `ExplosionService`.
 
-- [x] Incorporar la consulta `yaExploto()` en `Creeper`.
+**No repetir el traslado del cálculo de daño: ya está terminado.**
 
-- [x] Validar explícitamente en `ExplosionService` que el Creeper no haya explotado anteriormente.
+### 3.4. Verificaciones históricas
 
-- [x] Diferenciar las condiciones de rechazo.
-  - Creeper muerto.
-  - Creeper detonando.
-  - Creeper que ya explotó.
-  - Objetivo muerto.
-
-- [x] Verificar las condiciones mediante pruebas unitarias.
-
-- [x] Mantener el comportamiento existente de los métodos utilizados por el servicio.
-
-### 3.3. Dependencias que deben conservarse
-
-Los siguientes métodos y relaciones ya fueron identificados:
-
-- `ExplosionService` utiliza `comenzarDetonacion()` y `explotar()`.
-- `Creeper.tick()` llama internamente a `explotar()`.
-- `ExplosivoController` utiliza `puedeExplotar()`.
-- La interfaz `Explosivo` declara `explotar()` y `puedeExplotar()`.
-
-No eliminar ni cambiar estos métodos sin considerar sus dependencias.
-
-### 3.4. Verificación completa
-
-- [x] Ejecutar `.\mvnw.cmd clean test`.
-- [x] Confirmar 17 pruebas ejecutadas.
-- [x] Confirmar 17 pruebas aprobadas.
-- [x] Confirmar 0 fallos.
-- [x] Confirmar 0 errores.
-- [x] Confirmar BUILD SUCCESS.
-
-Fecha: 20/11/2026.
-
-### 3.5. Git
-
-- [x] Verificar `git diff --check`.
-- [x] Corregir una advertencia de indentación en `Creeper.java`.
-- [x] Verificar nuevamente el formato.
-- [x] Crear commit de la refactorización.
-
-Commit: `286ac22`.
-
-Mensaje:
-
-`refactor: trasladar calculo y validaciones de explosion al servicio`
-
-Archivos incluidos:
-
-- `CORRECCIONES-POO06-POO08.md`
-- `src/main/java/py/edu/uc/lp3/domain/Creeper.java`
-- `src/main/java/py/edu/uc/lp3/service/ExplosionService.java`
-- `src/test/java/py/edu/uc/lp3/service/ExplosionServiceTest.java`
-
-- [x] Confirmar que el commit se realizó correctamente.
-- [x] Confirmar que Git quedó sin cambios pendientes.
-
-**Estado:** refactorización del cálculo y de las validaciones específicas de explosión completada y guardada en Git.
-
-**Importante:** esto no significa que todas las observaciones de arquitectura de POO-08 estén resueltas. Todavía falta revisar otras responsabilidades del dominio.
+- [x] Confirmar **17/17** pruebas aprobadas tras la primera refactorización (20/11/2026).
+- [x] Confirmar **26/26** pruebas aprobadas en la revisión posterior documentada en el README (20/11/2026).
+- [x] Confirmar **33/33** tras `ExplosivoControllerTest`.
+- [x] Confirmar **34/34** tras la prueba de tres ticks.
+- [x] Confirmar **36/36** tras las pruebas de acercamiento, según la ejecución local informada por el estudiante.
 
 ---
 
-## 4. Problema de H2 durante las pruebas
+## 4. Incidente de H2 durante las pruebas
 
-### 4.1. Error encontrado
+### 4.1. Incidente histórico
 
-- [x] Identificar un error de inicialización de Spring Boot y Hibernate.
+Una ejecución de `./mvnw clean test` falló con `Unable to determine Dialect without JDBC metadata`: 13 pruebas ejecutadas, 7 errores, `BUILD FAILURE`.
 
-Durante una ejecución de:
+### 4.2. Diagnóstico y solución comprobada
 
-`.\mvnw.cmd clean test`
+La aplicación Spring Boot y la suite Maven estaban utilizando simultáneamente la base persistente `jdbc:h2:file:./data/minecraft`. Se consideró probable un conflicto de acceso al archivo.
 
-Se obtuvo:
+- [x] Detener Spring Boot con `Ctrl + C`.
+- [x] Repetir `./mvnw clean test` y obtener `BUILD SUCCESS`.
+- [x] Comprobar que no hacía falta modificar propiedades, borrar `data/`, configurar manualmente el dialecto ni revertir código.
 
-- 13 pruebas ejecutadas.
-- 0 fallos.
-- 7 errores.
-- BUILD FAILURE.
-
-Mensaje principal:
-
-`Unable to determine Dialect without JDBC metadata`
-
-### 4.2. Diagnóstico
-
-La aplicación Spring Boot estaba ejecutándose simultáneamente con las pruebas Maven.
-
-Ambas utilizaban la base H2 persistente:
-
-`jdbc:h2:file:./data/minecraft`
-
-La causa probable fue un conflicto de acceso al archivo de la base de datos.
-
-### 4.3. Solución comprobada
-
-- [x] Detener Spring Boot mediante Ctrl + C.
-- [x] Repetir `.\mvnw.cmd clean test`.
-- [x] Confirmar BUILD SUCCESS.
-- [x] Confirmar que las pruebas aprobaron sin errores.
-
-Posteriormente se ejecutaron nuevamente las pruebas completas:
-
-- 17 pruebas aprobadas.
-- 0 fallos.
-- 0 errores.
-- BUILD SUCCESS.
-
-No fue necesario:
-
-- Modificar `application.properties`.
-- Configurar manualmente el dialecto de Hibernate.
-- Borrar la carpeta `data`.
-- Revertir la refactorización.
-
-**Recordatorio:** antes de ejecutar las pruebas completas, detener cualquier instancia de Spring Boot que utilice la misma base H2.
+**Recordatorio:** detener Spring Boot antes de ejecutar pruebas que acceden a la misma base H2 persistente.
 
 ---
 
-## 5. Código ya revisado
+## 5. Código revisado y cambios recientes
 
-Los siguientes archivos fueron inspeccionados durante las correcciones:
+### 5.1. Archivos revisados
 
-- `MobHostilService.java`
-- `ExplosionService.java`
-- `Creeper.java`
-- `Entidad.java`
-- `Zombie.java`
-- `Atacante.java`
-- `Explosivo.java`
-- `PolimorfismoController.java`
-- `IndexController.java`
-- `ExplosivoController.java`
-- `SimulacionExplosion.java`
+`Entidad.java`, `SerVivo.java`, `MobHostil.java`, `Creeper.java`, `Zombie.java`, `Jugador.java`, `Vector3D.java`, `Atacante.java`, `Explosivo.java`, `TNT.java`, `SimulacionExplosion.java`, `MobHostilService.java`, `ExplosionService.java`, `JugadorService.java`, `IndexController.java`, `ExplosivoController.java`, `PolimorfismoController.java`, `AcercamientoController.java` y las pruebas correspondientes.
 
-No volver a solicitar estos archivos completos salvo que sea necesario para una modificación concreta.
+### 5.2. Cambios completados durante esta sesión
 
-**Nota:** `Creeper.java` y `ExplosionService.java` ya fueron modificados, probados y guardados en el commit `286ac22`.
+- [x] Eliminar búsqueda duplicada de `MobHostil` y mantenerla en `MobHostilService`.
+- [x] Crear `JugadorService` y delegar desde `IndexController`.
+- [x] Agregar `JugadorServiceTest` (creación válida, datos inválidos y constructor directo).
+- [x] Eliminar la validación duplicada de nombre en `Entidad` para el caso actual, conservando la de `Jugador`.
+- [x] Agregar `SerVivoTest` (salud máxima y regeneración inválida).
+- [x] Pasar validación de `ExplosivoController` al servicio y probar HTTP 409.
+- [x] Añadir prueba de detonación tras tres ticks.
+- [x] Implementar demostración HTTP de `acercarse()` con límites 2 y 4.
+- [x] Añadir dos pruebas de `AcercamientoControllerTest`.
 
 ---
 
-## 6. Observaciones pendientes de POO-06 y POO-08
+## 6. Observaciones todavía pendientes
 
 ### 6.1. Validaciones y excepciones del dominio
 
-- [ ] Revisar las validaciones que permanecen dentro de las clases del dominio.
-- [ ] Identificar qué reglas deben trasladarse a servicios.
-- [ ] Revisar específicamente `SerVivo` y `MobHostil`.
-- [ ] Revisar las responsabilidades restantes de `Entidad`.
-- [ ] Mantener las responsabilidades necesarias para JPA.
-- [ ] Evitar duplicar validaciones innecesariamente.
-- [ ] Conservar el funcionamiento de la herencia y el polimorfismo.
-- [ ] Verificar el comportamiento HTTP de los errores.
-- [ ] Ejecutar las pruebas después de modificar código.
+- [x] Inspeccionar `Entidad`, `SerVivo`, `MobHostil`, `Creeper` y sus servicios relacionados.
+- [x] Identificar y eliminar la lógica duplicada de búsqueda de objetivos.
+- [x] Trasladar al servicio la validación del nombre del jugador al crear por HTTP.
+- [x] Añadir tests para proteger la salud máxima y la regeneración.
+- [ ] Revisar y trasladar, donde corresponda, las validaciones y excepciones que **todavía** permanecen en `Entidad`, `SerVivo`, `MobHostil`, `Creeper` y `Zombie`.
+- [ ] Revisar `recibirDano()`, `curar()`, `cambiarSalud()`, `aplicarRegeneracion()` y sus invariantes antes de eliminar controles de entidades.
+- [ ] Evaluar el impacto sobre las demás clases que heredan de `Entidad` o `SerVivo` (incluidos `Jugador` y `Ghast`).
+- [ ] Evitar que una refactorización permita estados inválidos o rompa JPA, herencia o polimorfismo.
+- [ ] Confirmar que los errores HTTP sigan siendo informativos y correspondan a sus códigos.
 
-**Estado:** pendiente.
+**Estado:** parcialmente resuelto; no marcar la corrección arquitectónica completa como cerrada todavía.
 
-### 6.2. Reglas de explosión
+### 6.2. Reglas y estado de detonación
 
-- [x] Trasladar el cálculo del daño a `ExplosionService`.
-- [x] Eliminar el cálculo duplicado de `Creeper`.
-- [x] Incorporar la consulta `yaExploto()`.
-- [x] Agregar validación explícita para un Creeper que ya explotó.
-- [x] Verificar las condiciones principales de rechazo.
-- [x] Ejecutar 10 pruebas unitarias de explosión.
-- [x] Ejecutar 17 pruebas completas del proyecto.
-- [x] Registrar los cambios en Git.
-  - Commit: `286ac22`.
+- [x] Trasladar el cálculo de daño a `ExplosionService`.
+- [x] Validar los rechazos principales en el servicio.
+- [x] Proteger `tick()` con prueba de tres ticks.
+- [ ] Resolver la distribución definitiva de responsabilidades de `explotar()`, `puedeExplotar()` y `tick()` conforme al PDF.
 
-Todavía falta:
+### 6.3. `Explosivo` y polimorfismo
 
-- [ ] Revisar la distribución de responsabilidades de `explotar()`.
-- [ ] Revisar la distribución de responsabilidades de `puedeExplotar()`.
-- [ ] Revisar el comportamiento de `tick()` en relación con las reglas de juego.
-- [ ] Determinar si hacen falta cambios adicionales para satisfacer la observación del profesor.
+- [x] Confirmar que el profesor pidió dos implementaciones.
+- [x] Implementar `TNT` además de `Creeper`.
+- [x] Mostrar ambas mediante `List<Explosivo>` y `GET /api/minecraft/polimorfismo/explosivos`.
+- [x] Delegar validación de `ExplosivoController` al servicio.
+- [x] Probar que el Zombie produce HTTP 409.
 
-**No repetir el traslado del cálculo de daño. Ya está terminado.**
+**Estado de esta observación:** implementada y probada.
 
-### 6.3. Interfaz Explosivo
+### 6.4. Sobrecargas observables por HTTP
 
-- [x] Verificar el contrato de `Explosivo`.
-  - `boolean explotar()`.
-  - `boolean puedeExplotar()`.
+- [x] Verificar constructores sobrecargados de Creeper y Zombie.
+- [x] Implementar `AcercamientoController` y comprobar ambas variantes de `acercarse()` con 2 y 4 bloques.
+- [x] Incorporar dos tests del nuevo endpoint.
+- [x] Confirmar la suite de 36 pruebas con `BUILD SUCCESS`.
+- [ ] Verificar explícitamente la observabilidad por HTTP de las dos firmas de Zombie, si se desea demostrar también esa sobrecarga.
 
-- [x] Verificar el uso de `Atacante` con Creeper y Zombie.
+### 6.5. Diagramas y licencia
 
-- [ ] Confirmar si la corrección original exige específicamente dos clases que implementen `Explosivo`.
-- [ ] Si corresponde, implementar una segunda clase compatible.
-- [ ] Verificar el uso de la interfaz sin depender de una clase concreta.
-- [ ] Probar el comportamiento.
+- [x] Actualizar `Vaca`, `AldeanoArmero`, interfaces y relaciones de herencia.
+- [x] Actualizar documentación de `emitirSonido()`.
+- [x] Verificar Apache License 2.0 y su mención en el README.
+- [ ] Eliminar del README la antigua nota de licencia «pendiente de verificar» y actualizarlo para los cambios de esta sesión.
 
-### 6.4. Sobrecargas observables mediante HTTP
+### 6.6. Verificación y documentación finales
 
-- [x] Verificar constructores sobrecargados en Zombie.
-- [x] Verificar constructores sobrecargados en Creeper.
-
-Pendiente:
-
-- [ ] Verificar la demostración HTTP de los constructores.
-- [ ] Revisar la sobrecarga de `acercarse()` de Creeper.
-- [ ] Agregar o adaptar un endpoint solamente si es necesario.
-- [ ] Probar las respuestas HTTP.
-
-### 6.5. Diagramas
-
-- [ ] Actualizar los diagramas con `Vaca`.
-- [ ] Incorporar `AldeanoArmero`.
-- [ ] Verificar las relaciones de herencia.
-- [ ] Verificar las interfaces.
-- [ ] Revisar la documentación de `emitirSonido()`.
-
-### 6.6. Licencia
-
-- [ ] Verificar el archivo `LICENSE`.
-- [ ] Documentar la licencia Apache 2.0 en `README.md`.
-
-### 6.7. Documentación y pruebas finales
-
-- [ ] Revisar la documentación completa del proyecto.
-- [ ] Ejecutar nuevamente `.\mvnw.cmd clean test` al finalizar todas las correcciones.
-- [ ] Verificar los endpoints correspondientes.
-- [ ] Ejecutar `git diff --check`.
-- [ ] Revisar `git status`.
-- [ ] Registrar los cambios nuevos mediante commits.
-- [ ] Confirmar que las observaciones del profesor estén atendidas.
+- [ ] Resolver los pendientes arquitectónicos antes de declarar cerrada toda la corrección de POO-08.
+- [ ] Ejecutar nuevamente `./mvnw clean test` **después** de los cambios finales.
+- [ ] Revisar HTTP 400, 404 y 409; Swagger y los endpoints de simulación.
+- [ ] Ejecutar `git diff --check`, `git status` y confirmar los commits.
+- [ ] Actualizar README, `BITACORA.md`, esta lista y las especificaciones de entrega.
+- [ ] Subir la rama cuando el trabajo esté probado y se decida publicarlo.
 
 ---
 
 ## 7. Historial de Git
 
-**Repositorio:** `NRodriguez-taller-git-2026`
+**Repositorio:** `NicoRodriguez85677/NRodriguez-taller-git-2026`.
 
-**Rama:** `fix/correcciones-poo06-poo08`
-
-### Commits confirmados
+### 7.1. Correcciones iniciales
 
 | Commit | Descripción |
 |---|---|
-| `62c8b25` | Reorganización de clases del dominio |
+| `62c8b25` | Reorganización de dominio a `domain` |
 | `f4e0777` | Controllers delegan operaciones a servicios |
-| `5a93ac01` | Creación del seguimiento de correcciones |
-| `99acb46` | Pruebas unitarias iniciales de ExplosionService |
-| `2f27249` | Actualización del seguimiento de correcciones |
+| `5a93ac01` | Inicio del seguimiento |
+| `99acb46` | Pruebas iniciales de `ExplosionService` |
+| `2f27249` | Actualización del seguimiento |
 | `286ac22` | Traslado del cálculo y validaciones de explosión al servicio |
+| `220e046` | Delegación de simulación de Ghast y pruebas de búsqueda |
+| `c1b271b` | TNT y polimorfismo con `Explosivo` |
+| `7d54bbd` | Diagramas y documentación de POO-06 y POO-08 |
 
-**Último commit confirmado:** `286ac22`.
+### 7.2. Rama POO-09 y correcciones locales
 
-### Estado de Git
+| Commit | Descripción |
+|---|---|
+| `b44e50c` | OpenAPI inicial en la rama `feat/poo09-openapi-2026` (ya publicado en GitHub) |
+| `efb6f50` | Delegar creación de jugador al servicio y eliminar búsqueda duplicada |
+| `e213d17` | Pruebas iniciales de `JugadorService` |
+| `60c8f88` | Validación del nombre en servicio y prueba del constructor directo |
+| `a7e7d0b` | Pruebas de regeneración y salud máxima |
+| `1230a98` | Delegar comprobación de `Explosivo` al servicio y prueba HTTP 409 |
+| `7b979cd` | Prueba de detonación después de tres ticks |
+| `4a9b7c2` | Limpieza de formato de `ExplosionService` (`style: ordenar validaciones de ExplosionService`) |
+| `7eff864` | Endpoint y pruebas de acercamiento (`feat: demostrar sobrecarga de acercarse mediante HTTP`) |
 
-Después del commit `286ac22` se comprobó:
+**Estado reportado:** rama local `feat/poo09-openapi-2026`, con commits pendientes de `git push`; los commits posteriores a `b44e50c` aún no aparecen en GitHub. El último `git status` confirmado antes de los dos commits más recientes estaba limpio. Los hashes de los ocho commits locales recientes fueron confirmados mediante `git log -8 --oneline`; `HEAD` apunta a `7eff864`. Revisar `git status` después de actualizar este documento.
 
-- `git status --short`: sin archivos pendientes.
-- `git log -1 --oneline`: muestra `286ac22`.
-- Rama correcta: `fix/correcciones-poo06-poo08`.
-
-La edición actual de este documento generará un nuevo cambio pendiente de guardar en Git.
-
-No hace falta crear un commit exclusivo para cada anotación. Puede incluirse en el siguiente commit de trabajo.
-
-**No hacer push hasta completar las correcciones y verificaciones.**
+**No hacer `git push` hasta decidir que la rama está lista para compartir con los compañeros.**
 
 ---
 
 ## 8. Estado actual del proyecto
 
-**Fecha de última verificación:** 20/11/2026.
+### 8.1. Pruebas
 
-### Último resultado Maven
+**Última ejecución completa informada por el estudiante:**
 
-Comando:
+```powershell
+.\mvnw.cmd clean test
+```
 
-`.\mvnw.cmd clean test`
+- **36 pruebas aprobadas**.
+- **0 fallos y 0 errores**.
+- **BUILD SUCCESS**.
+- Última ampliación: 2 pruebas de `AcercamientoControllerTest`.
+- Pruebas específicas realizadas: `JugadorServiceTest`, `SerVivoTest`, `ExplosivoControllerTest`, `ExplosivoTest` y `AcercamientoControllerTest`.
 
-Resultado:
+### 8.2. HTTP comprobado
 
-- 17 pruebas ejecutadas.
-- 17 pruebas aprobadas.
-- 0 fallos.
-- 0 errores.
-- BUILD SUCCESS.
+- `GET /api/minecraft/polimorfismo/tipos-ataque` — polimorfismo de `Atacante`.
+- `GET /api/minecraft/polimorfismo/explosivos` — polimorfismo de Creeper y TNT.
+- `GET /api/minecraft/creeper/acercamiento?distanciaMaxima=2` — una variante se acerca y la limitada no.
+- `GET /api/minecraft/creeper/acercamiento?distanciaMaxima=4` — ambas se acercan.
+- `GET /api/minecraft/explosivos/{id}` con Zombie — HTTP 409 por prueba de controlador.
 
-### Pruebas de explosión
+### 8.3. POO-09: trabajo adelantado
 
-Comando:
+- [x] Crear rama `feat/poo09-openapi-2026`.
+- [x] Preparar dependencia `springdoc-openapi-starter-webmvc-ui` y configuración `OpenApiConfig` en GitHub (`b44e50c`).
+- [x] Incluir anotaciones iniciales de OpenAPI para CRUD y simulación de explosiones.
+- [ ] Revisar OpenAPI real `http://localhost:8080/v3/api-docs` y `http://localhost:8080/swagger-ui/index.html`, incluida la descripción de las reglas y los errores.
+- [ ] Completar README, bitácora y colección Insomnia de POO-09.
+- [ ] Configurar e implementar clientes HTTP de A2 y A3 **a partir de sus OpenAPI reales**.
+- [ ] Implementar el escenario Minecraft propio que consulta ambas APIs, guarda en H2 solo cuando ambas aceptan y atribuye el rechazo sin persistir.
+- [ ] Probar camino feliz, rechazo A2 y rechazo A3, y documentar las tres URLs del grupo.
 
-`.\mvnw.cmd -Dtest=ExplosionServiceTest test`
-
-Resultado:
-
-- 10 pruebas ejecutadas.
-- 10 pruebas aprobadas.
-- 0 fallos.
-- 0 errores.
-- BUILD SUCCESS.
-
-### Última corrección de código completada
-
-Traslado del cálculo del daño y validaciones específicas de explosión a `ExplosionService`.
-
-Commit: `286ac22`.
-
-### Refactorización pendiente
-
-Revisión de las validaciones y excepciones restantes del dominio, así como de las responsabilidades de `explotar()`, `puedeExplotar()` y `tick()`.
+**No afirmar que el escenario de APIs cruzadas ya funciona: la integración real sigue pendiente.**
 
 ---
 
 ## 9. Próximo trabajo
 
-### Paso inmediato
+### Antes de reunirse con el grupo
 
-Revisar las responsabilidades de las clases `SerVivo` y `MobHostil`.
+1. Resolver las responsabilidades y validaciones de dominio que siguen pendientes conforme a la corrección del profesor.
+2. Completar la revisión de `Creeper.explotar()`, `puedeExplotar()` y `tick()` sin romper el comportamiento probado.
+3. Verificar que OpenAPI y Swagger describan las rutas y reglas efectivas.
+4. Actualizar README, bitácora, seguimiento de correcciones y documentación de POO-08.
+5. Preparar la arquitectura de clientes y persistencia condicional, sin inventar rutas o cuerpos de A2 y A3.
+6. Ejecutar pruebas finales y revisar Git.
 
-Objetivos:
+### Con el grupo
 
-1. Identificar las validaciones que todavía permanecen en el dominio.
-2. Determinar cuáles corresponden a los servicios.
-3. Evitar modificaciones innecesarias en código ya corregido.
-4. Mantener la compatibilidad con JPA y la herencia.
-5. Implementar cambios pequeños.
-6. Ejecutar pruebas antes de guardar nuevos commits.
-
-### Después
-
-1. Completar la revisión de las reglas restantes de explosión.
-2. Resolver la observación específica sobre la interfaz `Explosivo`, si sigue pendiente.
-3. Comprobar las sobrecargas mediante HTTP.
-4. Actualizar los diagramas.
-5. Documentar la licencia.
-6. Ejecutar las pruebas finales.
-7. Realizar los commits correspondientes.
-8. Continuar con POO-09.
+1. Confirmar nombres, repositorios, puertos y OpenAPI de A2 y A3.
+2. Leer/importar sus especificaciones y decidir qué regla consulta cada cliente.
+3. Conectar las llamadas reales.
+4. Probar y registrar éxito, rechazo de A2 y rechazo de A3.
+5. Preparar colección Insomnia y entrega individual con enlace exacto al commit.
 
 ---
 
 ## 10. Reglas para continuar el trabajo
 
 - No repetir correcciones ya verificadas.
-- No solicitar nuevamente archivos completos que ya fueron revisados, salvo necesidad concreta.
-- Antes de agregar una funcionalidad, comprobar si ya existe.
-- Trabajar con cambios pequeños.
-- Ejecutar pruebas después de modificar código.
-- No hacer commits de código sin comprobar su funcionamiento.
-- Mantener actualizado este archivo de seguimiento.
-- No confundir errores de H2 con errores de lógica sin revisar primero la causa.
-- Detener Spring Boot antes de ejecutar pruebas que utilizan la misma base H2 persistente.
-- No hacer push hasta finalizar las correcciones.
-- Registrar los commits confirmados.
-- No dar por resueltas observaciones del profesor sin comprobar sus requisitos concretos.
+- No solicitar archivos completos previamente revisados salvo necesidad concreta.
+- Antes de programar, comprobar si la funcionalidad ya existe.
+- Hacer cambios pequeños y ejecutar las pruebas correspondientes.
+- Mantener las invariantes de dominio, compatibilidad JPA y polimorfismo.
+- No eliminar validaciones de entidades antes de comprobar qué servicio las sustituye y qué consumidores dependen de ellas.
+- Detener Spring Boot antes de ejecutar la suite Maven con H2 persistente.
+- No confundir cambios locales con cambios publicados en GitHub.
+- Registrar hashes de commits confirmados; no inventar hashes de commits que todavía no se hayan consultado.
+- No dar por cerrada la corrección de POO-08 mientras queden observaciones sin verificar.
 
 ---
 
 ## 11. Punto exacto para retomar
 
-**Último commit:** `286ac22`.
+**Trabajo recientemente terminado:** prueba y commit `7eff864` de la demostración HTTP de `acercarse()`, suite Maven con 36 pruebas aprobadas y hashes locales confirmados hasta `HEAD`.
 
-**Últimas pruebas completas:** 17/17 aprobadas.
+**Próximo paso recomendado:** guardar esta versión del seguimiento, ejecutar `git diff --check` y `git status --short`, y crear un commit exclusivo de documentación si solo está modificado `CORRECCIONES-POO06-POO08.md`. Después actualizar el README de POO-08/POO-09 y continuar con las observaciones arquitectónicas.
 
-**Pruebas de ExplosionService:** 10/10 aprobadas.
-
-**Git:** limpio después del último commit, antes de editar este documento.
-
-**Trabajo ya terminado:**
-- Organización del dominio.
-- Delegación de controllers a servicios.
-- Verificación de paquetes.
-- Verificación de constructores sobrecargados.
-- Demostración HTTP de `Atacante`.
-- Verificación de HTTP 400.
-- Pruebas iniciales y adicionales de explosión.
-- Traslado del cálculo del daño a `ExplosionService`.
-- Validaciones específicas de explosión.
-- Commit `286ac22`.
-
-**Trabajo inmediato pendiente:**
-- Revisar validaciones y excepciones de `SerVivo` y `MobHostil`.
-- Determinar qué responsabilidades deben trasladarse a servicios.
-
-**No volver a realizar el traslado del cálculo de daño ni repetir las pruebas anteriores sin una razón concreta.**
+**Última suite reportada:** **36/36**, `BUILD SUCCESS`. **No repetir pruebas solo por editar documentación**, salvo que se modifique código.
